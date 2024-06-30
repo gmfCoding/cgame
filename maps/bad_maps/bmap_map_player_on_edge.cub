@@ -1,0 +1,21 @@
+NO ./assets/wall.xpm
+SO ./assets/wall.xpm
+WE ./assets/wall.xpm
+EA ./assets/wall.xpm
+
+F 20,20,20
+C 200,200,200
+
+1S111
+11101
+10001
+10001
+10001
+10001
+11001
+10001
+10001
+10001
+10001
+10001
+11111

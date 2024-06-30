@@ -1,0 +1,14 @@
+NO ./assets/wall.xpm
+SO ./assets/wall.xpm
+WE ./assets/wall.xpm
+EA ./assets/wall.xpm
+F 225,100,0
+C 223,20,0 
+
+DR door01,/assets/debug.xpm,2,2,1,O,U
+
+111
+101
+101
+1N1
+111

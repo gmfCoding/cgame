@@ -1,0 +1,14 @@
+cub3d
+cub3D
+cubed
+**/*.swp
+**/*.swo
+**/*.so
+**/*.o
+**/*.a
+**/obj/
+.DS_Store
+**/_**/
+**/*.blend1
+**/*.blend2
+**/*.built
