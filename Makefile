@@ -42,7 +42,7 @@ endif
 
 $(info Compiling for OS:$(OS))
 
-NAME = cub3D
+NAME = app
 
 DIRSRC = src
 DIROBJ = obj/$(CONF)
@@ -51,8 +51,10 @@ DIRLIB = lib
 
 CMLLIB = libcml/libcml.a
 STBLIB = stb_image/libstb.a
+GLFWLIB = glfw/libglfw3.a
+GLADLIB = glad/libglad.a
 
-LIBSF = $(CMLLIB) $(STBLIB)
+LIBSF = $(CMLLIB) $(STBLIB) $(GLFWLIB) $(GLADLIB)
 
 # All relative to Makefile's folder
 SRCS = $(patsubst %.c,$(DIRSRC)/%.c, $(SRCSF))
@@ -118,7 +120,7 @@ endif
 ifneq ($(OS),Linux) 
 LDFLAGS += -framework OpenGL -framework AppKit 
 else 
-LDFLAGS += -lX11 -lXext
+LDFLAGS += -lX11 -lXext -lGL
 endif
 
 # RULES
@@ -168,6 +170,9 @@ $(DIRLIB)/$(CMLLIB):
 	make -s -C $(dir $@) all DFLAGS="$(DFLAGS)"
 
 $(DIRLIB)/$(STBLIB):
+	make -s -C $(dir $@) all DFLAGS="$(DFLAGS)"
+
+$(DIRLIB)/$(GLADLIB):
 	make -s -C $(dir $@) all DFLAGS="$(DFLAGS)"
 
 # Folders

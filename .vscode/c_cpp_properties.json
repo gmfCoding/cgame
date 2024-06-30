@@ -5,7 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/lib/libcml",
                 "${workspaceFolder}/inc",
-                "${workspaceFolder}/lib/stb_image"
+                "${workspaceFolder}/lib/stb_image",
+                "${workspaceFolder}/lib/glfw"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",
