@@ -12,7 +12,7 @@
 #ifndef VECTOR2_H
 # define VECTOR2_H
 
-typedef double	t_vecd;
+typedef float	t_vecd;
 
 typedef struct s_vec2
 {

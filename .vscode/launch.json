@@ -19,7 +19,7 @@
 			"type": "lldb",
 			"request": "launch",
 			"name": "LLDB Launch",
-			"program": "${workspaceFolder}/cub3D",
+			"program": "${workspaceFolder}/app",
 			"args": [],
 			"cwd": "${workspaceFolder}"
 		},
@@ -27,7 +27,7 @@
 			"name": "Launch",
 			"type": "cppdbg",
 			"request": "launch",
-			"program": "${workspaceFolder}/cub3D",
+			"program": "${workspaceFolder}/app",
 			"args": ["maps/map1.cub"],
 			"cwd": "${workspaceFolder}"
 		}

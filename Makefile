@@ -2,7 +2,6 @@ SRCSF = $(TEST) \
 		texture/texture.c \
 		texture/pixel.c \
 		texture/texture_util.c \
-		texture/texture_blit.c \
 		texture/circle.c \
 		vector/vector2_math_extra.c \
 		vector/vector2_math_div.c \
@@ -31,6 +30,12 @@ SRCSF = $(TEST) \
 		input/input_hooks.c \
 		input/keys.c \
 		input/mouse.c \
+		gpu/shader.c \
+		gpu/gpu_mesh.c \
+		model.c \
+		containers.c \
+		system/io.c \
+		asset.c
 
 ifndef $(TEST)
 TEST=main.c
@@ -54,6 +59,8 @@ STBLIB = stb_image/libstb.a
 GLFWLIB = glfw/libglfw3.a
 GLADLIB = glad/libglad.a
 
+STCINC = -I$(DIRLIB)/STC/include
+
 LIBSF = $(CMLLIB) $(STBLIB) $(GLFWLIB) $(GLADLIB)
 
 # All relative to Makefile's folder
@@ -63,13 +70,13 @@ LIBS = $(patsubst %.a,$(DIRLIB)/%.a, $(LIBSF))
 INCS = $(patsubst %.h,$(DIRINC)/%.h, $(INCSF))
 DEPS = $(OBJS:.o=.d)
 
-LIB-I = $(patsubst %,-I%,$(dir $(LIBS))) -I$(DIRLIB)
+LIB-I = $(patsubst %,-I%,$(dir $(LIBS))) -I$(DIRLIB) $(STCINC)
 LIB-l = $(subst lib,-l,$(basename $(notdir $(LIBSF))))
 LIB-L = $(patsubst %,-L$(DIRLIB)/%, $(dir $(LIBSF)))
 
 CC = cc
 
-WFLAGS =  -Wall -Werror -Wextra
+WFLAGS =-Wall -Werror -Wextra
 CPPFLAGS =-I$(DIRINC) $(LIB-I) -MMD -MP
 CFLAGS = $(OPFLAG) $(DFLAGS) $(XCFLAGS) $(WFLAGS)
 LDFLAGS = $(OPFLAG) $(DFLAGS) $(XLDFLAGS) $(LIB-L) $(LIB-l) -lz -lm -lpthread -ldl
@@ -94,11 +101,11 @@ OPFLAG = -O0
 endif
 ifneq (,$(findstring debug,$(OPTS)))
 	OPFLAG = -O0
-	DFLAGS += -g3
+	DFLAGS += -gdwarf-4
 endif
 ifneq (,$(findstring fdeb,$(OPTS)))
 	OPFLAG = -O1 -march=native
-	DFLAGS += -g3
+	DFLAGS += -gdwarf-4
 endif
 ifneq (,$(findstring fsan,$(OPTS)))
 # -fno-sanitize-ignorelist -fsanitize-ignorelist=ignorelist.txt

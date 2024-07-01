@@ -19,7 +19,7 @@ SRCSB =
 NAME = libcml.a
 OBJDIR = obj/
 CC = clang
-FLAGS = $(DFLAGS) -Wall -Wextra -Werror
+FLAGS = $(DFLAGS) -Wall -Wextra -Werror -g
 
 # OBJECT FILES
 OBJ := $(patsubst %.c, $(OBJDIR)%.o, $(SRCS))

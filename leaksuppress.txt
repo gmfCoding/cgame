@@ -1,0 +1,8 @@
+leak:pthread_cond_broadcast
+leak:_dbus_strdup
+leak:libdecor_plugin_init
+leak:FcValueSave
+leak:FcFontRenderPrepare
+leak:FcFontRenderPrepare
+leak:FcLangSetCopy
+leak:libfontconfig

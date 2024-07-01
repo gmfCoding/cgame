@@ -6,11 +6,13 @@
                 "${workspaceFolder}/lib/libcml",
                 "${workspaceFolder}/inc",
                 "${workspaceFolder}/lib/stb_image",
-                "${workspaceFolder}/lib/glfw"
+                "${workspaceFolder}/lib/glfw",
+                "${workspaceFolder}/lib/glad",
+                "${workspaceFolder}/lib/STC/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",
-            "cStandard": "c17",
+            "cStandard": "c23",
             "intelliSenseMode": "linux-clang-x64",
             "compilerArgs": [
                 "-D KEYMAP_LINUX"

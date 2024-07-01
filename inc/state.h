@@ -27,4 +27,7 @@ struct s_game
 	t_texture		rt0;
 };
 
+
+/* util/time.c */
+int64_t	time_get_ms(void);
 #endif
