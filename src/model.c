@@ -66,7 +66,7 @@ t_model *model_load(const char* file_path)
     vec_vec3 temp_vertices = {0};
     // vec_vec2 temp_uvs = {0};
     vec_vec3 temp_normals = {0};
-    smap_GPUIndex vertex_normal_map = smap_GPUIndex_init();
+    map_GPUIndex vertex_normal_map = map_GPUIndex_init();
 
 	FILE* file = fopen(file_path, "r");
 	if (file == NULL) {
@@ -102,9 +102,9 @@ t_model *model_load(const char* file_path)
 			}
 			else
 			{
-                smap_GPUIndex_insert_or_assign(&vertex_normal_map, vertexIndex[0], normalIndex[0]);
-                smap_GPUIndex_insert_or_assign(&vertex_normal_map, vertexIndex[1], normalIndex[1]);
-                smap_GPUIndex_insert_or_assign(&vertex_normal_map, vertexIndex[2], normalIndex[2]);
+                map_GPUIndex_insert_or_assign(&vertex_normal_map, vertexIndex[0], normalIndex[0]);
+                map_GPUIndex_insert_or_assign(&vertex_normal_map, vertexIndex[1], normalIndex[1]);
+                map_GPUIndex_insert_or_assign(&vertex_normal_map, vertexIndex[2], normalIndex[2]);
 
 				vec_GPUIndex_push_back(&vertex_indices, vertexIndex[0]);
 				vec_GPUIndex_push_back(&vertex_indices, vertexIndex[1]);
@@ -140,9 +140,9 @@ t_model *model_load(const char* file_path)
 	{
 		for (intptr_t i = 0; i < model->mesh.vertices._len; i++)
 		{
-            if (smap_GPUIndex_contains(&vertex_normal_map, i + 1) == false)
+            if (map_GPUIndex_contains(&vertex_normal_map, i + 1) == false)
                 break;
-            GPUIndex index = smap_GPUIndex_get(&vertex_normal_map, i + 1)->second;
+            GPUIndex index = map_GPUIndex_get(&vertex_normal_map, i + 1)->second;
             vec_vec3_push_back(&model->mesh.normals, temp_normals.data[index - 1]);
 		}
 	}

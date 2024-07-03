@@ -2,14 +2,14 @@
  * @Author: christopher.lovell
  * @Date: 2024-07-01 22:44:16
  * @Last Modified by: christopher.lovell
- * @Last Modified time: 2024-07-01 23:11:27
+ * @Last Modified time: 2024-07-03 00:15:13
  */
 #ifndef MODEL_H
 #define MODEL_H
 
 #include "vector3.h"
 #include "vector2.h"
-#include "cont/smap_gpui_gpui.h"
+#include "cont/map_gpui_gpui.h"
 #include "cont/vec_vec2.h"
 #include "cont/vec_vec3.h"
 #include "cont/vec_gpuindex.h"

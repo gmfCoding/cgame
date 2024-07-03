@@ -67,9 +67,6 @@ int main(void)
         (void)program;
         GLCall(glUseProgram(program));
 
-        GLCall(glBindVertexArray(mesh->m_vao));
-        GLCall(glDrawElements(GL_TRIANGLES, mesh->m_size, GL_UNSIGNED_INT, NULL));
-
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 

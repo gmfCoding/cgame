@@ -16,10 +16,17 @@
         "utility": "c",
         "map_gpui_gpui.h": "c",
         "model.h": "c",
-        "smap_gpui_gpui.h": "c",
+        "map_GPUI_gpui.h": "c",
         "vec_vec3.h": "c",
         "vec_gpuindex.h": "c",
         "gputypes.h": "c",
-        "gldebug.h": "c"
+        "gldebug.h": "c",
+        "sset.h": "c",
+        "entity.h": "c",
+        "mesh.h": "c",
+        "hmap.h": "c",
+        "vec2-ext.h": "c",
+        "mat4.h": "c",
+        "ivec4.h": "c"
     }
 }
