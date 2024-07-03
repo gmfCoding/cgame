@@ -5,14 +5,6 @@
 #include <alloca.h>
 #include <stdlib.h>
 
-typedef struct 
-{
-    GLuint shader_id;
-    const char *vert_path;
-    const char *frag_path;
-    /* data */
-} t_shader;
-
 void gpu_shader_debug_shader(GLuint shader)
 {
     GLint result = GL_FALSE;

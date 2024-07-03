@@ -30,6 +30,27 @@
 		"mat4.h": "c",
 		"ivec4.h": "c",
 		"set_entptr.h": "c",
-		"renderer.h": "c"
+		"renderer.h": "c",
+		"material.h": "c",
+		"load_glad.h": "c",
+		"cstr.h": "c",
+		"shader.h": "c",
+		"stdlib.h": "c",
+		"vec_shader.h": "c",
+		"vec_material.h": "c",
+		"stddef.h": "c",
+		"map_str_material.h": "c",
+		"map_str_shader.h": "c",
+		"material_system.h": "c",
+		"typeinfo": "c",
+		"vec4.h": "c",
+		"ivec3.h": "c",
+		"set_str.h": "c",
+		"map_mat_prop.h": "c",
+		"vec_mat_prop.h": "c",
+		"random": "c",
+		"vec_gpuvertex.h": "c",
+		"hset.h": "c",
+		"material_prop.h": "c"
 	}
 }

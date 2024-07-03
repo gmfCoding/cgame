@@ -1,6 +1,9 @@
 #include "load_glad.h"
 #include "gldebug.h"
 #include "entity.h"
+#include "material.h"
+
+#include <cglm/cam.h>
 
 void render_entities(t_render_ctx *ctx)
 {
@@ -14,11 +17,32 @@ void render_gpu_mesh(t_gpu_mesh *mesh)
     GLCall(glDrawElements(GL_TRIANGLES, mesh->m_size, GL_UNSIGNED_INT, NULL));
 }
 
+t_mesh_renderer* mesh_renderer_create(t_gpu_mesh *mesh, t_material *material)
+{
+	t_mesh_renderer *renderer = malloc(sizeof(t_mesh_renderer));
+	*renderer = (t_mesh_renderer){0};
+	renderer->material = material;
+	renderer->mesh = mesh;
+    return renderer;
+}
+
 void render_mesh_renderer(const t_transform *transform, t_mesh_renderer *renderer)
 {
     if (transform == NULL || renderer->mesh == NULL)
         return;
+	t_mat_prop *prop;
+
     // apply materials
+	if ((prop = material_prop_get(renderer->material, "MVP")) != NULL)
+	{
+		mat4 mat;
+		glm_mat4_identity(&mat);
+		glm_perspective(80, 16/9, 0.1, 1.0, &mat);
+		prop->value.mat
+		material_prop_update(renderer->material, prop);
+	}
+
+    material_apply(renderer->material);
     render_gpu_mesh(renderer->mesh);
 }
 
@@ -29,17 +53,13 @@ void render_entity(t_entity *entity)
     render_mesh_renderer(&entity->transform, entity->renderer);
 }
 
-/// @brief Attaches an entity to the render context
-/// This allows the entity to be rendered
-/// @param render 
-/// @param entity 
 void entity_render_attach(t_render_ctx *render, t_entity *entity)
 {
     entity->render_ctx = render;
     set_entptr_push(&render->entities, entity);
 }
 
-void entity_render_attach(t_render_ctx *render, t_entity *entity)
+void entity_render_deattach(t_render_ctx *render, t_entity *entity)
 {
     entity->render_ctx = NULL;
     set_entptr_erase(&render->entities, entity);

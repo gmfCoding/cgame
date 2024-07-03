@@ -8,7 +8,8 @@
 t_gpu_mesh *gpu_mesh_add(t_mesh *mesh)
 {
     t_gpu_mesh *gmesh = malloc(sizeof(t_gpu_mesh));
-    
+    *gmesh = (t_gpu_mesh){0};
+
     gmesh->normals = mesh->normals._len >= 1 && mesh->normals._len == mesh->vertices._len;
 	gmesh->uvs = mesh->uvs._len >= 1 && mesh->uvs._len == mesh->vertices._len;
 	gmesh->mesh = mesh;

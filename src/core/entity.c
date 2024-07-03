@@ -14,9 +14,10 @@ t_entity *entity_create(t_entitytype type)
 {
     t_entity *entity = malloc(sizes[type]);
     memcpy(entity, defaults[type], sizes[type]);
+	return entity;
 }
 
-t_entity *entity_destroy(t_entity *entity)
+void entity_destroy(t_entity *entity)
 {
     free(entity);
 }

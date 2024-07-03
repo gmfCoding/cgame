@@ -1,7 +1,14 @@
 [submodule "lib/STC"]
 	path = lib/STC
+	shallow = true
 	url = https://github.com/stclib/STC.git
 
 [submodule "lib/glfw"]
 	path = lib/glfw
+	shallow = true
 	url = https://github.com/glfw/glfw.git
+
+[submodule "lib/cglm"]
+	path = lib/cglm
+	shallow = true
+	url = https://github.com/recp/cglm.git

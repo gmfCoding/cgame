@@ -1,13 +1,35 @@
 #include "material.h"
+#include "shader.h"
 
-t_mat_prop *material_prop_get(const t_material *mat, const char* name)
+t_mat_prop *material_prop_get(t_material *mat, const char* name)
 {
-    t_mat_prop *prop = map_mat_prop_get(&mat->properties, name);
+    t_mat_prop *prop = &map_mat_prop_get_mut(&mat->properties, name)->second;
     return prop;
 }
 
-void mat_prop_apply(t_mat_prop *prop)
+bool mat_prop_location_try_load(t_material *mat, t_mat_prop *prop)
 {
+	if (prop == NULL || mat == NULL || mat->shader == NULL)
+		return false;
+	if (prop->location_status == MPLS_UNLOADED)
+	{
+		prop->location = glGetUniformLocation(mat->shader->shader_id, prop->name);
+		if (prop->location < 0)
+		{
+			prop->location_status = MPLS_NONEXIST;
+			return false;
+		}
+		prop->location_status = MPLS_LOADED;
+	}
+	return true;
+}
+
+void mat_prop_apply(t_material *mat, t_mat_prop *prop)
+{
+	if (prop == NULL || mat == NULL || mat->shader == NULL)
+		return;
+	if (!mat_prop_location_try_load(mat, prop))
+		return;
 	if (prop->location <= -1)
 		return;
 	switch (prop->type)
@@ -41,33 +63,38 @@ void material_prop_update(t_material *material, t_mat_prop *prop)
     prop->dirty = true;
 }
 
-
 void material_apply(t_material *mat)
 {
+	if (mat->shader == NULL)
+		return;
+	glUseProgram(mat->shader->shader_id);
     if (mat->dirty == false)
         return;
     mat->dirty = false;
-    c_foreach(it, set_str, mat->prop_names)
+	for (set_str_iter it = set_str_begin(&mat->prop_names); it.ref; set_str_next(&it))
     {
-        t_mat_prop *prop = material_prop_get(mat, *it.ref);
+        t_mat_prop *prop = material_prop_get(mat, cstr_str(it.ref));
         if (prop->dirty == false)
             continue;
         prop->dirty = false;
         if (prop != NULL)
-            mat_prop_apply(prop);
+            mat_prop_apply(mat, prop);
     }
 }
 
 void material_prop_add(t_material *mat, t_mat_prop *const prop)
 {
-    prop->location = glGetUniformLocation(mat->program, prop->name);
-    if (prop->location < 0)
-        return;
-    map_mat_prop_insert_or_assign(&mat->properties, prop->name, *prop);
+    map_mat_prop_emplace_or_assign(&mat->properties, prop->name, *prop);
+    set_str_emplace(&mat->prop_names, prop->name);
+	material_prop_update(mat, &map_mat_prop_get_mut(&mat->properties, prop->name)->second);
+}
+
+void material_prop_add_new(t_material *mat, const char*name, t_mat_prop_type type, t_mat_prop_value value)
+{
+	material_prop_add(mat, &(t_mat_prop){.name=name, .type=type, .value=value});
 }
 
 void material_prop_add_range(t_material *mat, vec_mat_prop properties)
-
 {
     c_foreach(it, vec_mat_prop, properties)
     {  

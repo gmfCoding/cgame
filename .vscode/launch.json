@@ -19,6 +19,7 @@
 			"type": "lldb",
 			"request": "launch",
 			"name": "LLDB Launch",
+			"env": {"QT_QPA_PLATFORM":"x11", "XDG_SESSION_TYPE":"x11"},
 			"program": "${workspaceFolder}/app",
 			"args": [],
 			"cwd": "${workspaceFolder}"

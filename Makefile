@@ -32,6 +32,10 @@ SRCSF = $(TEST) \
 		input/mouse.c \
 		gpu/shader.c \
 		gpu/gpu_mesh.c \
+		core/material.c \
+		core/entity.c \
+		core/renderer.c \
+		core/material_system.c \
 		model.c \
 		containers.c \
 		system/io.c \
@@ -61,7 +65,7 @@ GLFWDIR = $(DIRLIB)/$(dir $(GLFWLIB))
 
 GLADLIB = glad/libglad.a
 
-STCINC = -I$(DIRLIB)/STC/include
+STCINC = -I$(DIRLIB)/STC/include -I$(DIRLIB)/cglm/include
 
 LIBSF = $(CMLLIB) $(STBLIB) $(GLADLIB) $(GLFWLIB)
 
@@ -82,7 +86,7 @@ WFLAGS =-Wall -Werror -Wextra
 CPPFLAGS =-I$(DIRINC) $(LIB-I) -MMD -MP
 CFLAGS = $(OPFLAG) $(DFLAGS) $(XCFLAGS) $(WFLAGS)
 LDFLAGS = $(OPFLAG) $(DFLAGS) $(XLDFLAGS) $(LIB-L) $(LIB-l) -lz -lm -lpthread -ldl
-OPFLAG = -O3 -flto -march=native -mtune=native -msse4.2 
+OPFLAG = #-O3 -flto -march=native -mtune=native -msse4.2 
 
 OPTS = $(OPT)
 SAN = address 
