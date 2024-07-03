@@ -1,0 +1,7 @@
+[submodule "lib/STC"]
+	path = lib/STC
+	url = https://github.com/stclib/STC.git
+
+[submodule "lib/glfw"]
+	path = lib/glfw
+	url = https://github.com/glfw/glfw.git

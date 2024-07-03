@@ -1,6 +1,7 @@
 #ifndef GPU_MESH_H
 #define GPU_MESH_H
 #include "model.h"
+#include "load_glad.h"
 
 typedef struct
 {

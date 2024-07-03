@@ -1,6 +1,6 @@
 
 #define i_implement
-#include "cont/map_GPUI_gpui.h"
+#include "cont/map_gpui_gpui.h"
 
 #define i_implement
 #include "cont/vec_gpuindex.h"
@@ -15,4 +15,4 @@
 #include "cont/vec_vec3.h"
 
 #define i_implement
-#include "cont/set_entity.h"
+#include "cont/set_entptr.h"

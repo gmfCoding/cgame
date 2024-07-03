@@ -57,11 +57,13 @@ DIRLIB = lib
 CMLLIB = libcml/libcml.a
 STBLIB = stb_image/libstb.a
 GLFWLIB = glfw/libglfw3.a
+GLFWDIR = $(DIRLIB)/$(dir $(GLFWLIB))
+
 GLADLIB = glad/libglad.a
 
 STCINC = -I$(DIRLIB)/STC/include
 
-LIBSF = $(CMLLIB) $(STBLIB) $(GLFWLIB) $(GLADLIB)
+LIBSF = $(CMLLIB) $(STBLIB) $(GLADLIB) $(GLFWLIB)
 
 # All relative to Makefile's folder
 SRCS = $(patsubst %.c,$(DIRSRC)/%.c, $(SRCSF))
@@ -178,6 +180,12 @@ $(DIRLIB)/$(CMLLIB):
 
 $(DIRLIB)/$(STBLIB):
 	make -s -C $(dir $@) all DFLAGS="$(DFLAGS)"
+
+$(DIRLIB)/$(GLFWLIB):
+	mkdir -p $(GLFWDIR)build
+	cmake -S $(GLFWDIR) -B $(GLFWDIR)build
+	make -C $(GLFWDIR)build 
+	cp $(GLFWDIR)build/src/libglfw3.a $(GLFWDIR)libglfw3.a
 
 $(DIRLIB)/$(GLADLIB):
 	make -s -C $(dir $@) all DFLAGS="$(DFLAGS)"
