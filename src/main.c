@@ -14,6 +14,7 @@
 #include "engine.h"
 #include "entity.h"
 #include "renderer.h"
+#include "camera.h"
 
 void materials_setup(t_material_system *system)
 {
@@ -64,6 +65,7 @@ int main(void)
     }
 	t_engine engine = {0};
 
+	camera_init(&engine.render_context.camera, 70.0f, 4.0f / 3.0f, 0.1f, 100.0f);
     materials_setup(&engine.material);
 
     char path[PATH_MAX];

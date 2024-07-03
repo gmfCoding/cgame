@@ -51,6 +51,16 @@
 		"random": "c",
 		"vec_gpuvertex.h": "c",
 		"hset.h": "c",
-		"material_prop.h": "c"
+		"material_prop.h": "c",
+		"sstream": "c",
+		"camera.h": "c",
+		"affine.h": "c",
+		"quat.h": "c",
+		"cam.h": "c",
+		"cglm.h": "c",
+		"*.tcc": "c",
+		"numeric": "c",
+		"transform.h": "c",
+		"vec3.h": "c"
 	}
 }

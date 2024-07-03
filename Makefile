@@ -36,6 +36,7 @@ SRCSF = $(TEST) \
 		core/entity.c \
 		core/renderer.c \
 		core/material_system.c \
+		core/camera.c \
 		model.c \
 		containers.c \
 		system/io.c \
