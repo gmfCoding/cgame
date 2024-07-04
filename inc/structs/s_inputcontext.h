@@ -20,6 +20,18 @@ struct s_inputctx
 	t_vec2i	mouse_prev;
 	t_vec2	mousef;
 
+	double prev_mouse_x;
+	double prev_mouse_y;
+
+	double curr_mouse_x;
+	double curr_mouse_y;
+
+	double mouse_x_delta;
+	double mouse_y_delta;
+
+	bool first_time;
+	bool ignore_next_delta;
+
 	int		frame;
 };
 #endif

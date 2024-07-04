@@ -1,4 +1,5 @@
 #include "camera.h"
+#include <input.h>
 
 void camera_init(t_camera *camera, float fov, float aspect, float near, float far)
 {
@@ -39,6 +40,18 @@ void camera_view_update(t_camera *camera)
 	glm_mat4_mul(camera->projection, camera->view, camera->premultPV);
 }
 
+void camera_control_look(t_camera *camera, t_inputctx *input)
+{
+    float sensitivity = 1.0f;
+
+    camera->yaw   += input->mouse_x_delta * sensitivity;
+    camera->pitch += input->mouse_y_delta * sensitivity;
+
+    if( camera->pitch > 89.0f)
+         camera->pitch =  89.0f;
+    if( camera->pitch < -89.0f)
+         camera->pitch = -89.0f;
+}
 
 void camera_control(t_camera *camera, t_move *move, float deltaTime)
 {

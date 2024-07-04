@@ -38,5 +38,5 @@ typedef struct GLFWwindow GLFWwindow;
 void    input_cb_mousekey(GLFWwindow* window, int button, int action, int mods);
 void    input_cb_key(GLFWwindow* window, int key, int scancode, int action, int mods);
 void	input_cb_mouse_move(GLFWwindow* window, double x, double y);
-
+void    input_mouse_move_end(t_inputctx* context);
 #endif

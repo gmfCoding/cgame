@@ -70,6 +70,28 @@ void input_cb_mousekey(GLFWwindow* window, int button, int action, int mods)
 void	input_cb_mouse_move(GLFWwindow* window, double x, double y)
 {
 	(void)window;
+	t_inputctx *input = glfw_input_context;
+
+	if (input->first_time)
+    {
+        glfwGetCursorPos(window, &input->prev_mouse_x , &input->prev_mouse_y);
+        input->first_time = false;
+    }
+    
+    glfwGetCursorPos(window, &input->curr_mouse_x, &input->curr_mouse_y);
+
+    input->mouse_x_delta = input->curr_mouse_x - input->prev_mouse_x;
+    input->mouse_y_delta = input->prev_mouse_y - input->curr_mouse_y;
+
 	glfw_input_context->mouse = v2inew(x, y);
 	glfw_input_context->mousef = v2new(x, y);
+}
+
+void input_mouse_move_end(t_inputctx* input)
+{
+	input->mouse_x_delta = 0;
+	input->mouse_y_delta = 0;
+
+    input->prev_mouse_x = input->curr_mouse_x;
+    input->prev_mouse_y = input->curr_mouse_y;
 }

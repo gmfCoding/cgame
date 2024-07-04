@@ -63,6 +63,8 @@ int main(void)
     glfwMakeContextCurrent(window);
 
     glfwSetKeyCallback(window, input_cb_key);
+    input.first_time = true;
+    glfwSetCursorPosCallback(window, input_cb_mouse_move);
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         perror("Failed to initialize GLAD");
         return -1;
@@ -90,6 +92,7 @@ int main(void)
         GLCall(glClearColor(.2,.2,.6,1));
         glClear(GL_COLOR_BUFFER_BIT);
         camera_view_update(&engine.render_context.camera);
+
         t_move move = {0};
 
         move.Forward = input_keyheld(&input, KEY_W);
@@ -98,11 +101,12 @@ int main(void)
         move.Right = input_keyheld(&input, KEY_D);
         move.Up = input_keyheld(&input, KEY_SPACE);
         move.Down = input_keyheld(&input, KEY_LCTRL);
-        if(input_keydown(&input, KEY_LCTRL))
-            printf("pressed lctrl\n");
+
+        camera_control_look(&engine.render_context.camera, &input);
         camera_control(&engine.render_context.camera, &move, 0.1);
 		render_entities(&engine.render_context);
         input_process(&input);
+        input_mouse_move_end(&input);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
