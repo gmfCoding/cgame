@@ -67,6 +67,7 @@ GLFWDIR = $(DIRLIB)/$(dir $(GLFWLIB))
 GLADLIB = glad/libglad.a
 
 STCINC = -I$(DIRLIB)/STC/include -I$(DIRLIB)/cglm/include
+GLFWINC = -I$(GLFWDIR)include
 
 LIBSF = $(CMLLIB) $(STBLIB) $(GLADLIB) $(GLFWLIB)
 
@@ -77,7 +78,7 @@ LIBS = $(patsubst %.a,$(DIRLIB)/%.a, $(LIBSF))
 INCS = $(patsubst %.h,$(DIRINC)/%.h, $(INCSF))
 DEPS = $(OBJS:.o=.d)
 
-LIB-I = $(patsubst %,-I%,$(dir $(LIBS))) -I$(DIRLIB) $(STCINC)
+LIB-I = $(patsubst %,-I%,$(dir $(LIBS))) -I$(DIRLIB) $(STCINC) $(GLFWINC)
 LIB-l = $(subst lib,-l,$(basename $(notdir $(LIBSF))))
 LIB-L = $(patsubst %,-L$(DIRLIB)/%, $(dir $(LIBSF)))
 

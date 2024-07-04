@@ -9,7 +9,8 @@
                 "${workspaceFolder}/lib/glfw",
                 "${workspaceFolder}/lib/glad",
                 "${workspaceFolder}/lib/STC/include",
-                "${workspaceFolder}/lib/cglm/include"
+                "${workspaceFolder}/lib/cglm/include",
+                "${workspaceFolder}/lib/glfw/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",

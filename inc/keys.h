@@ -13,6 +13,7 @@
 #ifndef KEYS_H
 # define KEYS_H
 
+# include <GLFW/glfw3.h>
 # include <stdbool.h>
 
 # define KEY_MB_MASK	0x00FF0000
@@ -28,243 +29,123 @@
 # define MB_SCRLUP		0x00FF0004
 # define MB_SCRLDW		0x00FF0005
 
-# ifdef __linux__
-#  define KEY_REG_MAX	127
-#  define KEY_SPACE		32
-#  define KEY_APOSTROPH	39
-#  define KEY_COMMA		44
-#  define KEY_PERIOD	46
-#  define KEY_MINUS		45
-#  define KEY_EQUALS	61
-#  define KEY_FSLASH	47
-#  define KEY_BSLASH	92
-#  define KEY_0			48
-#  define KEY_1			49
-#  define KEY_2			50
-#  define KEY_3			51
-#  define KEY_4			52
-#  define KEY_5			53
-#  define KEY_6			54
-#  define KEY_7			55
-#  define KEY_8			56
-#  define KEY_9			57
-#  define KEY_SEMICOLON	59
-#  define KEY_TILDA		96
-#  define KEY_SQBLEFT	91
-#  define KEY_SQBRIGHT	93
-#  define KEY_TAB		65289
-#  define KEY_A			97
-#  define KEY_B			98
-#  define KEY_C			99
-#  define KEY_D			100
-#  define KEY_E			101
-#  define KEY_F			102
-#  define KEY_G			103
-#  define KEY_H			104
-#  define KEY_I			105
-#  define KEY_J			106
-#  define KEY_K			107
-#  define KEY_L			108
-#  define KEY_M			109
-#  define KEY_N			110
-#  define KEY_O			111
-#  define KEY_P			112
-#  define KEY_Q			113
-#  define KEY_R			114
-#  define KEY_S			115
-#  define KEY_T			116
-#  define KEY_U			117
-#  define KEY_V			118
-#  define KEY_W			119
-#  define KEY_X			120
-#  define KEY_Y			121
-#  define KEY_Z			122
+#  define KEY_REG_MAX	350
+#  define KEY_SPACE		GLFW_KEY_SPACE
+#  define KEY_APOSTROPH	GLFW_KEY_APOSTROPHE
+#  define KEY_COMMA		GLFW_KEY_COMMA
+#  define KEY_PERIOD	GLFW_KEY_PERIOD
+#  define KEY_MINUS		GLFW_KEY_MINUS
+#  define KEY_EQUALS	GLFW_KEY_EQUAL
+#  define KEY_FSLASH	GLFW_KEY_SLASH
+#  define KEY_BSLASH	GLFW_KEY_BACKSLASH
+#  define KEY_0			GLFW_KEY_0
+#  define KEY_1			GLFW_KEY_1
+#  define KEY_2			GLFW_KEY_2
+#  define KEY_3			GLFW_KEY_3
+#  define KEY_4			GLFW_KEY_4
+#  define KEY_5			GLFW_KEY_5
+#  define KEY_6			GLFW_KEY_6
+#  define KEY_7			GLFW_KEY_7
+#  define KEY_8			GLFW_KEY_8
+#  define KEY_9			GLFW_KEY_9
+#  define KEY_SEMICOLON	GLFW_KEY_SEMICOLON
+#  define KEY_TILDA		GLFW_KEY_GRAVE_ACCENT
+#  define KEY_SQBLEFT	GLFW_KEY_LEFT_BRACKET
+#  define KEY_SQBRIGHT	GLFW_KEY_RIGHT_BRACKET
+#  define KEY_TAB		GLFW_KEY_TAB
+#  define KEY_A			GLFW_KEY_A
+#  define KEY_B			GLFW_KEY_B
+#  define KEY_C			GLFW_KEY_C
+#  define KEY_D			GLFW_KEY_D
+#  define KEY_E			GLFW_KEY_E
+#  define KEY_F			GLFW_KEY_F
+#  define KEY_G         GLFW_KEY_G
+#  define KEY_H         GLFW_KEY_H
+#  define KEY_I         GLFW_KEY_I
+#  define KEY_J         GLFW_KEY_J
+#  define KEY_K         GLFW_KEY_K
+#  define KEY_L         GLFW_KEY_L
+#  define KEY_M         GLFW_KEY_M
+#  define KEY_N         GLFW_KEY_N
+#  define KEY_O         GLFW_KEY_O
+#  define KEY_P         GLFW_KEY_P
+#  define KEY_Q         GLFW_KEY_Q
+#  define KEY_R         GLFW_KEY_R
+#  define KEY_S         GLFW_KEY_S
+#  define KEY_T         GLFW_KEY_T
+#  define KEY_U         GLFW_KEY_U
+#  define KEY_V         GLFW_KEY_V
+#  define KEY_W         GLFW_KEY_W
+#  define KEY_X         GLFW_KEY_X
+#  define KEY_Y         GLFW_KEY_Y
+#  define KEY_Z         GLFW_KEY_Z
 
-#  define KEY_BACKSPACE	65288
-#  define KEY_ENTER		65293
+#  define KEY_BACKSPACE	GLFW_KEY_BACKSPACE
+#  define KEY_ENTER		GLFW_KEY_ENTER
 
-#  define KEY_LCTRL		65507
-#  define KEY_RCTRL		65508
+#  define KEY_LCTRL		GLFW_KEY_LEFT_CONTROL
+#  define KEY_RCTRL		GLFW_KEY_RIGHT_CONTROL
 
-#  define KEY_CAPS		65509
+#  define KEY_CAPS		GLFW_KEY_CAPS_LOCK
 
-#  define KEY_LSHIFT	65505
-#  define KEY_RSHIFT	65506
+#  define KEY_LSHIFT	GLFW_KEY_LEFT_SHIFT
+#  define KEY_RSHIFT	GLFW_KEY_RIGHT_SHIFT
 
-#  define KEY_LALT		65513
-#  define KEY_RALT		65514
+#  define KEY_LALT		GLFW_KEY_LEFT_ALT
+#  define KEY_RALT		GLFW_KEY_RIGHT_ALT
 
-#  define KEY_DEL		65535
+#  define KEY_DEL		GLFW_KEY_DELETE
 
-#  define KEY_ESC		65307
+#  define KEY_ESC		GLFW_KEY_ESCAPE
 
-#  define KEY_LARROW	65361
-#  define KEY_UARROW	65362
-#  define KEY_RARROW	65363
-#  define KEY_DARROW	65364
+#  define KEY_LARROW	GLFW_KEY_LEFT
+#  define KEY_UARROW	GLFW_KEY_UP
+#  define KEY_RARROW	GLFW_KEY_RIGHT
+#  define KEY_DARROW	GLFW_KEY_DOWN
 
-#  define KEY_F1		65470
-#  define KEY_F2		65471
-#  define KEY_F3		65472
-#  define KEY_F4		65473
-#  define KEY_F5		65474
-#  define KEY_F6		65475
-#  define KEY_F7		65476
-#  define KEY_F8		65477
-#  define KEY_F9		65478
-#  define KEY_F10		65479
-#  define KEY_F11		65480
-#  define KEY_F12		65481
-#  define KEY_F14       65483
+#  define KEY_F1		GLFW_KEY_F1
+#  define KEY_F2		GLFW_KEY_F2
+#  define KEY_F3		GLFW_KEY_F3
+#  define KEY_F4		GLFW_KEY_F4
+#  define KEY_F5		GLFW_KEY_F5
+#  define KEY_F6		GLFW_KEY_F6
+#  define KEY_F7		GLFW_KEY_F7
+#  define KEY_F8		GLFW_KEY_F8
+#  define KEY_F9		GLFW_KEY_F9
+#  define KEY_F10		GLFW_KEY_F10
+#  define KEY_F11		GLFW_KEY_F11
+#  define KEY_F12		GLFW_KEY_F12
+#  define KEY_F14       GLFW_KEY_F14
 
 /* UNVERIFIED */
-#  define KEY_MENU		65383
-#  define KEY_HOME		65360
+#  define KEY_MENU		GLFW_KEY_MENU
+#  define KEY_HOME		GLFW_KEY_HOME
 
-#  define KEY_PGUP		65365
-#  define KEY_PGDW		65366
-#  define KEY_END		65367
-#  define KEY_INS		65379
+#  define KEY_PGUP	    GLFW_KEY_PAGE_UP
+#  define KEY_PGDW		GLFW_KEY_PAGE_DOWN
+#  define KEY_END		GLFW_KEY_END
+#  define KEY_INS		GLFW_KEY_INSERT
 
-#  define KEY_SCRLCK	65407
+#  define KEY_SCRLCK	GLFW_KEY_SCROLL_LOCK
 
-#  define KEY_NP_LOCK   65407 /* TODO: is it the same as scroll? */
-#  define KEY_NP_1		65436
-#  define KEY_NP_2		65433
-#  define KEY_NP_3		65435
-#  define KEY_NP_4		65430
-#  define KEY_NP_5		65437
-#  define KEY_NP_6		65432
-#  define KEY_NP_7		65429
-#  define KEY_NP_8		65431
-#  define KEY_NP_9		65434
-#  define KEY_NP_0		65438
-#  define KEY_NP_DIV	65455
-#  define KEY_NP_ADD	65451
-#  define KEY_NP_MULT	65450
-#  define KEY_NP_SUB	65453
-#  define KEY_NP_ENTER	65421
-#  define KEY_NP_PERIOD	65439
+#  define KEY_NP_LOCK   GLFW_KEY_NUM_LOCK /* TODO: is it the same as scroll? */
+#  define KEY_NP_1		GLFW_KEY_KP_1
+#  define KEY_NP_2		GLFW_KEY_KP_2
+#  define KEY_NP_3		GLFW_KEY_KP_3
+#  define KEY_NP_4		GLFW_KEY_KP_4
+#  define KEY_NP_5		GLFW_KEY_KP_5
+#  define KEY_NP_6		GLFW_KEY_KP_6
+#  define KEY_NP_7		GLFW_KEY_KP_7
+#  define KEY_NP_8		GLFW_KEY_KP_8
+#  define KEY_NP_9		GLFW_KEY_KP_9
+#  define KEY_NP_0		GLFW_KEY_KP_0
+#  define KEY_NP_DIV	GLFW_KEY_KP_DIVIDE
+#  define KEY_NP_ADD	GLFW_KEY_KP_ADD
+#  define KEY_NP_MULT	GLFW_KEY_KP_MULTIPLY
+#  define KEY_NP_SUB	GLFW_KEY_KP_SUBTRACT
+#  define KEY_NP_ENTER	GLFW_KEY_KP_ENTER
+#  define KEY_NP_PERIOD	0
 #  define KEY_NP_EQUAL	0
-# else
-#  define KEY_REG_MAX	272
-#  define KEY_SPACE		49
-#  define KEY_APOSTROPH	39
-#  define KEY_COMMA		43
-#  define KEY_PERIOD	47
-#  define KEY_MINUS		27
-#  define KEY_EQUALS	24
-#  define KEY_FSLASH	44
-#  define KEY_BSLASH	42
-#  define KEY_0			29
-#  define KEY_1			18
-#  define KEY_2			19
-#  define KEY_3			20
-#  define KEY_4			21
-#  define KEY_5			23
-#  define KEY_6			22
-#  define KEY_7			26
-#  define KEY_8			28
-#  define KEY_9			25
-#  define KEY_SEMICOLON	41
-#  define KEY_TILDA		50
-#  define KEY_SQBLEFT	33
-#  define KEY_SQBRIGHT	30
-#  define KEY_TAB		48
-#  define KEY_A			0
-#  define KEY_B			11
-#  define KEY_C			8
-#  define KEY_D			2
-#  define KEY_E			14
-#  define KEY_F			3
-#  define KEY_G			5
-#  define KEY_H			4
-#  define KEY_I			34
-#  define KEY_J			38
-#  define KEY_K			40
-#  define KEY_L			37
-#  define KEY_M			46
-#  define KEY_N			45
-#  define KEY_O			31
-#  define KEY_P			35
-#  define KEY_Q			12
-#  define KEY_R			15
-#  define KEY_S			1
-#  define KEY_T			17
-#  define KEY_U			32
-#  define KEY_V			9
-#  define KEY_W			13
-#  define KEY_X			7
-#  define KEY_Y			16
-#  define KEY_Z			6
-
-#  define KEY_BACKSPACE	51
-#  define KEY_ENTER		36
-
-#  define KEY_LCTRL		256
-#  define KEY_RCTRL		269
-
-#  define KEY_CAPS		272
-
-#  define KEY_LSHIFT	257
-#  define KEY_RSHIFT	258
-
-#  define KEY_LALT		261
-#  define KEY_RALT		262
-
-#  define KEY_DEL		117
-
-#  define KEY_ESC		53
-
-#  define KEY_LARROW	123
-#  define KEY_UARROW	126
-#  define KEY_RARROW	124
-#  define KEY_DARROW	125
-
-#  define KEY_F1		122
-#  define KEY_F2		120
-#  define KEY_F3		99
-#  define KEY_F4		118
-#  define KEY_F5		96
-#  define KEY_F6		97
-#  define KEY_F7		98
-#  define KEY_F8		100
-#  define KEY_F9		101
-#  define KEY_F10		109
-#  define KEY_F11		103
-#  define KEY_F12		111
-#  define KEY_F14       107
-
-#  define KEY_MENU		KEY_F9
-#  define KEY_HOME		115
-#  define KEY_PGUP		116
-#  define KEY_PGDW		121
-#  define KEY_END		119
-/* HELP KEY REMAP (N/A)*/
-#  define KEY_INS		114 
-
-/* F14 REMAP (N/A)*/
-#  define KEY_SCRLCK	KEY_F14
-
-#  define KEY_NP_LOCK   71 // CLEAR
-#  define KEY_NP_1		83
-#  define KEY_NP_2		84
-#  define KEY_NP_3		85
-#  define KEY_NP_4		86
-#  define KEY_NP_5		87
-#  define KEY_NP_6		88
-#  define KEY_NP_7		89
-#  define KEY_NP_8		91
-#  define KEY_NP_9		92
-#  define KEY_NP_0		82
-#  define KEY_NP_DIV	75
-#  define KEY_NP_ADD	69
-#  define KEY_NP_MULT	67
-#  define KEY_NP_SUB	78
-#  define KEY_NP_ENTER	76
-#  define KEY_NP_PERIOD	65
-#  define KEY_NP_EQUAL	81
-# endif
 
 void		key_get_mapkey(const int **array, int *size);
 void		key_get_mapstr(const char *const **array, int *size, bool name);

@@ -36,6 +36,7 @@ void render_mesh_renderer(t_render_ctx *context, t_transform *transform, t_mesh_
     // apply materials
     if ((prop = material_prop_get(renderer->material, "MVP")) != NULL)
     {
+        glm_mat4_identity(prop->value.mat);
         transform_get_mat4(transform, prop->value.mat);
         glm_mat4_mul(context->camera.premultPV, prop->value.mat, prop->value.mat);
         material_prop_update(renderer->material, prop);

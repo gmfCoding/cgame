@@ -4,7 +4,7 @@
 
 static t_entity *defaults[] =
 {
-   [ET_BASE] = &(t_entity){0}
+   [ET_BASE] = &(t_entity){.transform.scale={1, 1, 1}, 0}
 };
 
 static size_t sizes[] = 

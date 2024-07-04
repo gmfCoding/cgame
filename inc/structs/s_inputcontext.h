@@ -7,7 +7,7 @@
 # include "vector2i.h"
 
 #ifndef KEY_REG_MAX
-#define KEY_REG_MAX 256
+#define KEY_REG_MAX 350
 #endif
 
 struct s_inputctx

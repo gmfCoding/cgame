@@ -30,7 +30,7 @@ typedef struct s_camera
 
 } t_camera;
 
-#define CAMERA_DEFAULT (t_camera){.yaw = 225.0, .view = GLM_MAT4_IDENTITY, .projection = GLM_MAT4_IDENTITY, .direction = GLM_XUP, 0}
+#define CAMERA_DEFAULT (t_camera){.yaw = 225.0, .view = GLM_MAT4_IDENTITY_INIT, .projection = GLM_MAT4_IDENTITY_INIT, .direction = {0,0,1}}
 
 void camera_view_update(t_camera *camera);
 void camera_control(t_camera *camera, t_move *move, float deltaTime);

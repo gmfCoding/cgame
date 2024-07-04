@@ -35,6 +35,7 @@ void camera_view_update(t_camera *camera)
 		camera->view
     );
 
+	glm_mat4_identity(camera->premultPV);
 	glm_mat4_mul(camera->projection, camera->view, camera->premultPV);
 }
 

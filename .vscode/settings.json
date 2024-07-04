@@ -61,6 +61,10 @@
 		"*.tcc": "c",
 		"numeric": "c",
 		"transform.h": "c",
-		"vec3.h": "c"
+		"vec3.h": "c",
+		"input.h": "c",
+		"glfw3.h": "c",
+		"stdio.h": "c",
+		"s_inputcontext.h": "c"
 	}
 }

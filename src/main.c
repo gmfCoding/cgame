@@ -15,6 +15,7 @@
 #include "entity.h"
 #include "renderer.h"
 #include "camera.h"
+#include "input.h"
 
 void materials_setup(t_material_system *system)
 {
@@ -44,6 +45,8 @@ void materials_setup(t_material_system *system)
 int main(void)
 {
     GLFWwindow* window;
+    t_inputctx input = {0};
+    glfw_input_context = &input;
     /* Initialize the library */
     if (!glfwInit())
         return -1;
@@ -59,12 +62,15 @@ int main(void)
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
 
+    glfwSetKeyCallback(window, input_cb_key);
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         perror("Failed to initialize GLAD");
         return -1;
     }
 	t_engine engine = {0};
 
+    engine.render_context.camera = CAMERA_DEFAULT;
+    glm_vec3_copy((vec3){0,0,10}, engine.render_context.camera.transform.position);
 	camera_init(&engine.render_context.camera, 70.0f, 4.0f / 3.0f, 0.1f, 100.0f);
     materials_setup(&engine.material);
 
@@ -83,9 +89,20 @@ int main(void)
     {
         GLCall(glClearColor(.2,.2,.6,1));
         glClear(GL_COLOR_BUFFER_BIT);
+        camera_view_update(&engine.render_context.camera);
+        t_move move = {0};
 
+        move.Forward = input_keyheld(&input, KEY_W);
+        move.Backwards = input_keyheld(&input, KEY_S);
+        move.Left = input_keyheld(&input, KEY_A);
+        move.Right = input_keyheld(&input, KEY_D);
+        move.Up = input_keyheld(&input, KEY_SPACE);
+        move.Down = input_keyheld(&input, KEY_LCTRL);
+        if(input_keydown(&input, KEY_LCTRL))
+            printf("pressed lctrl\n");
+        camera_control(&engine.render_context.camera, &move, 0.1);
 		render_entities(&engine.render_context);
-
+        input_process(&input);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

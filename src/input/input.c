@@ -79,17 +79,17 @@ void	input_process(t_inputctx *input)
 uint8_t	*input_get_state(t_inputctx *input, int *key)
 {
 	uint8_t	*state;
-
+	(void)key;
 	state = input->key_state;
-	if ((*key & KEY_CMD_MASK) == KEY_CMD_MASK)
-	{
-		*key &= ~KEY_CMD_MASK;
-		state = input->special_state;
-	}
-	else if ((*key & KEY_MB_MASK) == KEY_MB_MASK)
-	{
-		*key &= ~KEY_MB_MASK;
-		state = input->mouse_state;
-	}
+	// if ((*key & KEY_CMD_MASK) == KEY_CMD_MASK)
+	// {
+	// 	*key &= ~KEY_CMD_MASK;
+	// 	state = input->special_state;
+	// }
+	// else if ((*key & KEY_MB_MASK) == KEY_MB_MASK)
+	// {
+	// 	*key &= ~KEY_MB_MASK;
+	// 	state = input->mouse_state;
+	// }
 	return (state);
 }
