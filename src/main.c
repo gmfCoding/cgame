@@ -42,34 +42,47 @@ void materials_setup(t_material_system *system)
 	free(basic_vertex);
 }
 
-int main(void)
+int engine_setup(t_engine *engine)
 {
-    GLFWwindow* window;
-    t_inputctx input = {0};
-    glfw_input_context = &input;
-    /* Initialize the library */
+/* Initialize the library */
     if (!glfwInit())
         return -1;
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
-    if (!window)
+    engine->window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    if (!engine->window)
     {
         glfwTerminate();
         return -1;
     }
 
     /* Make the window's context current */
-    glfwMakeContextCurrent(window);
+    glfwMakeContextCurrent(engine->window);
 
-    glfwSetKeyCallback(window, input_cb_key);
-    input.first_time = true;
-    glfwSetCursorPosCallback(window, input_cb_mouse_move);
+    glfwSetKeyCallback(engine->window, input_cb_key);
+    engine->input.first_time = true;
+
+    glfwSetCursorPosCallback(engine->window, input_cb_mouse_move);
+
+	if (glfwRawMouseMotionSupported())
+    	glfwSetInputMode(engine->window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+	glfwSetInputMode(engine->window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         perror("Failed to initialize GLAD");
         return -1;
     }
+	return 0;
+}
+
+int main(void)
+{
 	t_engine engine = {0};
+	engine.target_fps = 25;
+	engine.input = (t_inputctx){0};
+    glfw_input_context = &engine.input;
+
+	if (engine_setup(&engine) != 0)
+		return -1;
 
     engine.render_context.camera = CAMERA_DEFAULT;
     glm_vec3_copy((vec3){0,0,10}, engine.render_context.camera.transform.position);
@@ -82,32 +95,42 @@ int main(void)
     t_gpu_mesh *mesh = gpu_mesh_add(&crate->mesh); 
     (void)mesh;
 	
-
 	t_entity *ent = entity_create(ET_BASE);
 	ent->renderer = mesh_renderer_create(mesh, material_system_mat_get(&engine.material, "basic_material"));
 	entity_render_attach(&engine.render_context, ent);
-
-    while (!glfwWindowShouldClose(window))
+	double delta_time = 0;
+	double time_last_frame = 0;
+	double lasttime = 0;
+    while (!glfwWindowShouldClose(engine.window))
     {
+		delta_time = glfwGetTime() - time_last_frame;
+		time_last_frame = glfwGetTime();
         GLCall(glClearColor(.2,.2,.6,1));
         glClear(GL_COLOR_BUFFER_BIT);
         camera_view_update(&engine.render_context.camera);
 
         t_move move = {0};
 
-        move.Forward = input_keyheld(&input, KEY_W);
-        move.Backwards = input_keyheld(&input, KEY_S);
-        move.Left = input_keyheld(&input, KEY_A);
-        move.Right = input_keyheld(&input, KEY_D);
-        move.Up = input_keyheld(&input, KEY_SPACE);
-        move.Down = input_keyheld(&input, KEY_LCTRL);
+        move.Forward = input_keyheld(&engine.input, KEY_W);
+        move.Backwards = input_keyheld(&engine.input, KEY_S);
+        move.Left = input_keyheld(&engine.input, KEY_A);
+        move.Right = input_keyheld(&engine.input, KEY_D);
+        move.Up = input_keyheld(&engine.input, KEY_E);
+        move.Down = input_keyheld(&engine.input, KEY_Q);
 
-        camera_control_look(&engine.render_context.camera, &input);
-        camera_control(&engine.render_context.camera, &move, 0.1);
+        camera_control_look(&engine.render_context.camera, &engine.input);
+        camera_control(&engine.render_context.camera, &move, delta_time);
 		render_entities(&engine.render_context);
-        input_process(&input);
-        input_mouse_move_end(&input);
-        glfwSwapBuffers(window);
+        input_process(&engine.input);
+        input_mouse_move_end(&engine.input);
+        glfwSwapBuffers(engine.window);
+
+
+		while (engine.target_fps > 0 && glfwGetTime() < lasttime + 1.0 / engine.target_fps) {
+            // TODO: Put the thread to sleep, yield, or simply do nothing
+        }
+
+        lasttime += 1.0 / engine.target_fps;
         glfwPollEvents();
     }
     glfwTerminate();

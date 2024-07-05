@@ -1,0 +1,2 @@
+export QT_QPA_PLATFORM=x11
+export XDG_SESSION_TYPE=x11

@@ -1,4 +1,6 @@
 SRCSF = $(TEST) \
+		vendor/stb_image.c \
+		vendor/containers.c \
 		texture/texture.c \
 		texture/pixel.c \
 		texture/texture_util.c \
@@ -38,7 +40,6 @@ SRCSF = $(TEST) \
 		core/material_system.c \
 		core/camera.c \
 		model.c \
-		containers.c \
 		system/io.c \
 		asset.c
 

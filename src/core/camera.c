@@ -42,7 +42,7 @@ void camera_view_update(t_camera *camera)
 
 void camera_control_look(t_camera *camera, t_inputctx *input)
 {
-    float sensitivity = 1.0f;
+    float sensitivity = 0.3f;
 
     camera->yaw   += input->mouse_x_delta * sensitivity;
     camera->pitch += input->mouse_y_delta * sensitivity;
