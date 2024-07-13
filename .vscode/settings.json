@@ -68,6 +68,9 @@
 		"s_inputcontext.h": "c",
 		"stb_image.h": "c",
 		"keys.h": "c",
-		"stdbool.h": "c"
+		"stdbool.h": "c",
+		"texture.h": "c",
+		"s_texture.h": "c",
+		"map_resource.h": "c"
 	}
 }

@@ -91,7 +91,7 @@ int main(void)
 
     char path[PATH_MAX];
     t_model *crate = model_load(asset_get_path(path, 2, "models", "crate.obj"));
-
+	t_gpu_texture* texture = gpu_texture_add(t_texture *texture);
     t_gpu_mesh *mesh = gpu_mesh_add(&crate->mesh); 
     (void)mesh;
 	
