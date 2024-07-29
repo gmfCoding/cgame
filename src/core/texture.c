@@ -1,13 +1,7 @@
 #include "GLFW/glfw3.h"
 #include "stb_image.h"
 #include "texture.h"
-
-typedef struct t_gpu_texture
-{
-	// t_resource resource;
-	t_texture *texture;
-	GLuint texture;
-} t_gpu_texture;
+#include "gputypes.h"
 
 // typedef struct t_resource
 // {
@@ -37,7 +31,6 @@ t_gpu_texture *gpu_texture_add(const char *name, const char *asset_path, int cha
 {
 	t_texture tex;
 	t_gpu_texture gpu_tex;
-
 
 	unsigned int texture;
 	glGenTextures(1, &texture);

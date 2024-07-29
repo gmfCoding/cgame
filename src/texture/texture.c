@@ -6,7 +6,7 @@
 /*   By: clovell <clovell@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/25 16:11:47 by clovell           #+#    #+#             */
-/*   Updated: 2024/07/01 04:25:38 by clovell          ###   ########.fr       */
+/*   Updated: 2024/07/29 18:11:22 by clovell          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stb_image.h>
@@ -60,9 +60,9 @@ void	texture_destroy(t_texture *tex, t_texture **tex_ptr, \
 		tex = *tex_ptr;
 	if (tex == NULL)
 		return ;
-	if (tex != NULL && tex->img != NULL)
+	if (tex != NULL && tex->data != NULL)
 		free(tex->data);
-	tex->img = NULL;
+	tex->data = NULL;
 	if (tex_ptr != NULL)
 		*tex_ptr = NULL;
 	if (use_free)
