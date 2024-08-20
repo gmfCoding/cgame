@@ -71,6 +71,9 @@
 		"stdbool.h": "c",
 		"texture.h": "c",
 		"s_texture.h": "c",
-		"map_resource.h": "c"
+		"map_resource.h": "c",
+		"component_registery_gen.h": "c",
+		"components.h": "c",
+		"stdint.h": "c"
 	}
 }
