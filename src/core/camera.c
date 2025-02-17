@@ -4,37 +4,37 @@
 void camera_init(t_camera *camera, float fov, float aspect, float near, float far)
 {
 	glm_perspective(
-        glm_rad(fov), // The vertical Field of View, in radians: the amount of "zoom". Think "camera lens". Usually between 90° (extra wide) and 30° (quite zoomed in)
-        aspect,       // Aspect Ratio. Depends on the size of your window. Notice that 4/3 == 800/600 == 1280/960, sounds familiar ?
-        near,              // Near clipping plane. Keep as big as possible, or you'll get precision issues.
-        far,             // Far clipping plane. Keep as little as possible.
+		glm_rad(fov), // The vertical Field of View, in radians: the amount of "zoom". Think "camera lens". Usually between 90° (extra wide) and 30° (quite zoomed in)
+		aspect,       // Aspect Ratio. Depends on the size of your window. Notice that 4/3 == 800/600 == 1280/960, sounds familiar ?
+		near,              // Near clipping plane. Keep as big as possible, or you'll get precision issues.
+		far,             // Far clipping plane. Keep as little as possible.
 		camera->projection 
-    );
+	);
 
-    camera->direction[0] = cos(glm_rad(camera->yaw)) * cos(glm_rad(camera->pitch));
-    camera->direction[1] = sin(glm_rad(camera->pitch));
-    camera->direction[2] = sin(glm_rad(camera->yaw)) * cos(glm_rad(camera->pitch));
-    glm_normalize(camera->direction);
+	camera->direction[0] = cos(glm_rad(camera->yaw)) * cos(glm_rad(camera->pitch));
+	camera->direction[1] = sin(glm_rad(camera->pitch));
+	camera->direction[2] = sin(glm_rad(camera->yaw)) * cos(glm_rad(camera->pitch));
+	glm_normalize(camera->direction);
 }
 
 
 void camera_view_update(t_camera *camera)
 {
-    vec3 up = {0.0f, 1.0f, 0.0f};
+	vec3 up = {0.0f, 1.0f, 0.0f};
 
-    camera->direction[0] = cos(glm_rad(camera->yaw)) * cos(glm_rad(camera->pitch));
-    camera->direction[1] = sin(glm_rad(camera->pitch));
-    camera->direction[2] = sin(glm_rad(camera->yaw)) * cos(glm_rad(camera->pitch));
-    glm_normalize(camera->direction);
+	camera->direction[0] = cos(glm_rad(camera->yaw)) * cos(glm_rad(camera->pitch));
+	camera->direction[1] = sin(glm_rad(camera->pitch));
+	camera->direction[2] = sin(glm_rad(camera->yaw)) * cos(glm_rad(camera->pitch));
+	glm_normalize(camera->direction);
 
 	vec3 centre;
 	glm_vec3_add(camera->transform.position, camera->direction, centre);
-    glm_lookat(
-        camera->transform.position,
+	glm_lookat(
+		camera->transform.position,
 		centre,
-        up,
+		up,
 		camera->view
-    );
+	);
 
 	glm_mat4_identity(camera->premultPV);
 	glm_mat4_mul(camera->projection, camera->view, camera->premultPV);
@@ -42,15 +42,15 @@ void camera_view_update(t_camera *camera)
 
 void camera_control_look(t_camera *camera, t_inputctx *input)
 {
-    float sensitivity = 0.3f;
+	float sensitivity = 0.3f;
 
-    camera->yaw   += input->mouse_x_delta * sensitivity;
-    camera->pitch += input->mouse_y_delta * sensitivity;
+	camera->yaw   += input->mouse_x_delta * sensitivity;
+	camera->pitch += input->mouse_y_delta * sensitivity;
 
-    if( camera->pitch > 89.0f)
-         camera->pitch =  89.0f;
-    if( camera->pitch < -89.0f)
-         camera->pitch = -89.0f;
+	if( camera->pitch > 89.0f)
+		camera->pitch =  89.0f;
+	if( camera->pitch < -89.0f)
+		camera->pitch = -89.0f;
 }
 
 void camera_control(t_camera *camera, t_move *move, float deltaTime)

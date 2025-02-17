@@ -18,7 +18,7 @@ t_inputctx *glfw_input_context;
 
 void input_cb_key(GLFWwindow* window, int key, int scancode, int action, int mods)
 {	
-	printf("%d %d %d %d\n", key, scancode, action, mods);
+	// printf("%d %d %d %d\n", key, scancode, action, mods);
 
 	(void)window;
 	(void)scancode;

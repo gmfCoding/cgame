@@ -29,20 +29,62 @@ t_mesh_renderer *mesh_renderer_create(t_gpu_mesh *mesh, t_material *material)
 
 void render_mesh_renderer(t_render_ctx *context, t_transform *transform, t_mesh_renderer *renderer)
 {
-    if (transform == NULL || renderer->mesh == NULL)
-        return;
-    t_mat_prop *prop;
+	if (transform == NULL || renderer->mesh == NULL)
+		return;
 
-    // apply materials
-    if ((prop = material_prop_get(renderer->material, "MVP")) != NULL)
-    {
-        glm_mat4_identity(prop->value.mat);
-        transform_get_mat4(transform, prop->value.mat);
-        glm_mat4_mul(context->camera.premultPV, prop->value.mat, prop->value.mat);
-        material_prop_update(renderer->material, prop);
-    }
-    material_apply(renderer->material);
-    render_gpu_mesh(renderer->mesh);
+	{
+		t_mat_prop *prop = material_prop_get(renderer->material, "MVP");
+		if (prop != NULL)
+		{
+			glm_mat4_identity(prop->value.mat);
+			transform_get_mat4(transform, prop->value.mat);
+			glm_mat4_mul(context->camera.premultPV, prop->value.mat, prop->value.mat);
+			material_prop_update(renderer->material, prop);
+		}
+	}
+
+	{
+		t_mat_prop *prop = material_prop_get(renderer->material, "model");
+		if (prop != NULL)
+		{
+			glm_mat4_identity(prop->value.mat);
+			glm_translate(prop->value.mat, transform->position);
+			material_prop_update(renderer->material, prop);
+		}
+	}
+
+	{
+		t_mat_prop *prop = material_prop_get(renderer->material, "view");
+		if (prop != NULL)
+		{
+			glm_mat4_identity(prop->value.mat);
+			glm_mat4_copy(context->camera.view, prop->value.mat);
+			material_prop_update(renderer->material, prop);
+		}
+	}
+
+	{
+		t_mat_prop *prop = material_prop_get(renderer->material, "proj");
+		if (prop != NULL)
+		{
+			glm_mat4_identity(prop->value.mat);
+			glm_mat4_copy(context->camera.projection, prop->value.mat);
+			material_prop_update(renderer->material, prop);
+		}
+	}
+
+	{
+		t_mat_prop *prop = material_prop_get(renderer->material, "proj");
+		if (prop != NULL)
+		{
+			glm_mat4_identity(prop->value.mat);
+			glm_mat4_copy(context->camera.projection, prop->value.mat);
+			material_prop_update(renderer->material, prop);
+		}
+	}
+
+	material_apply(renderer->material);
+	render_gpu_mesh(renderer->mesh);
 }
 
 void render_entity(t_entity *entity)

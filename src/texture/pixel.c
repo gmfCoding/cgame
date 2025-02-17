@@ -15,7 +15,7 @@ __attribute__((always_inline))
 inline void	pixel_set(const t_texture data, const int x, const int y, \
 																const int color)
 {
-	data.data[x + y * data.width] = color;
+	data.data[x + y * data.width].rgba = color;
 }
 
 __attribute__((always_inline))
@@ -24,12 +24,12 @@ inline void	pixel_set_s(const t_texture data, const int x, const int y, \
 {
 	if (x < 0 || y < 0 || x >= data.width || y >= data.height)
 		return ;
-	data.data[x + y * data.width] = color;
+	data.data[x + y * data.width].rgba  = color;
 }
 
 inline int	pixel_get(const t_texture data, const int x, const int y)
 {
-	return (data.data[x + y * data.width]);
+	return (data.data[x + y * data.width].rgba);
 }
 
 #ifdef D_ASSERT_PIXEL_NO_GET
@@ -49,6 +49,6 @@ int	pixel_get_s(const t_texture data, const int x, const int y)
 {
 	if (x < 0 || y < 0 || x > data.width || y > data.height)
 		return (R_ALPHA);
-	return (data.data[x + y * data.width]);
+	return (data.data[x + y * data.width].rgba);
 }
 #endif

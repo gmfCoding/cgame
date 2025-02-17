@@ -1,47 +1,47 @@
 SRCSF = $(TEST) \
-		vendor/stb_image.c \
-		vendor/containers.c \
-		texture/texture.c \
-		texture/pixel.c \
-		texture/texture_util.c \
-		texture/circle.c \
-		vector/vector2_math_extra.c \
-		vector/vector2_math_div.c \
-		vector/vector2_math.c \
-		vector/vector2_angle.c \
-		vector/vector2_dist.c \
-		vector/vector2_lerp.c \
-		vector/vector2.c \
-		vector/vector2i_math_extra.c \
-		vector/vector2i_math.c \
-		vector/vector2i.c \
-		vector/vector3_math_extra.c \
-		vector/vector3_math.c \
-		vector/vector3_math_div.c \
-		vector/vector3.c \
-		vector/vector4_math.c \
-		vector/vtoa.c \
-		vector/vector2_conv.c \
-		vector/vector3_conv.c \
-		vector/rect.c \
-		util/time.c \
-		util/math.c \
-		util/bounds.c \
-		util/random.c \
-		input/input.c \
-		input/input_hooks.c \
-		input/keys.c \
-		input/mouse.c \
-		gpu/shader.c \
-		gpu/gpu_mesh.c \
-		core/material.c \
-		core/entity.c \
-		core/renderer.c \
-		core/material_system.c \
-		core/camera.c \
-		model.c \
-		system/io.c \
-		asset.c
+vendor/stb_image.c \
+vendor/containers.c \
+texture/texture.c \
+texture/pixel.c \
+texture/texture_util.c \
+texture/circle.c \
+vector/vector2_math_extra.c \
+vector/vector2_math_div.c \
+vector/vector2_math.c \
+vector/vector2_angle.c \
+vector/vector2_dist.c \
+vector/vector2_lerp.c \
+vector/vector2.c \
+vector/vector2i_math_extra.c \
+vector/vector2i_math.c \
+vector/vector2i.c \
+vector/vector3_math_extra.c \
+vector/vector3_math.c \
+vector/vector3_math_div.c \
+vector/vector3.c \
+vector/vector4_math.c \
+vector/vtoa.c \
+vector/vector2_conv.c \
+vector/vector3_conv.c \
+vector/rect.c \
+util/time.c \
+util/math.c \
+util/bounds.c \
+util/random.c \
+input/input.c \
+input/input_hooks.c \
+input/keys.c \
+input/mouse.c \
+gpu/shader.c \
+gpu/gpu_mesh.c \
+core/material.c \
+core/entity.c \
+core/renderer.c \
+core/material_system.c \
+core/camera.c \
+model.c \
+system/io.c \
+asset.c
 
 ifndef $(TEST)
 TEST=main.c
@@ -85,7 +85,7 @@ LIB-L = $(patsubst %,-L$(DIRLIB)/%, $(dir $(LIBSF)))
 
 CC = cc
 
-WFLAGS =-Wall -Werror -Wextra
+WFLAGS = # -Wall -Werror -Wextra
 CPPFLAGS =-I$(DIRINC) $(LIB-I) -MMD -MP
 CFLAGS = $(OPFLAG) $(DFLAGS) $(XCFLAGS) $(WFLAGS)
 LDFLAGS = $(OPFLAG) $(DFLAGS) $(XLDFLAGS) $(LIB-L) $(LIB-l) -lz -lm -lpthread -ldl

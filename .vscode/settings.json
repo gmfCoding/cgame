@@ -1,6 +1,7 @@
 {
     "files.associations": {
 		"*.sep": "ini",
+		"*.cxy": "c",
 		"inttypes.h": "c",
 		"io.h": "c",
 		"libcml.h": "c",
@@ -71,6 +72,9 @@
 		"stdbool.h": "c",
 		"texture.h": "c",
 		"s_texture.h": "c",
-		"map_resource.h": "c"
+		"map_resource.h": "c",
+		"glad.h": "c",
+		"gpu_texture.h": "c",
+		"pixel.h": "c"
 	}
 }

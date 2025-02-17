@@ -60,9 +60,9 @@ void	texture_destroy(t_texture *tex, t_texture **tex_ptr, \
 		tex = *tex_ptr;
 	if (tex == NULL)
 		return ;
-	if (tex != NULL && tex->img != NULL)
+	if (tex != NULL && tex->data != NULL)
 		free(tex->data);
-	tex->img = NULL;
+	tex->data = NULL;
 	if (tex_ptr != NULL)
 		*tex_ptr = NULL;
 	if (use_free)

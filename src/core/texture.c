@@ -1,13 +1,7 @@
 #include "GLFW/glfw3.h"
 #include "stb_image.h"
 #include "texture.h"
-
-typedef struct t_gpu_texture
-{
-	// t_resource resource;
-	t_texture *texture;
-	GLuint texture;
-} t_gpu_texture;
+#include "gpu/gpu_texture.h"
 
 // typedef struct t_resource
 // {

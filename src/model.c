@@ -4,69 +4,69 @@
 
 t_model *model_create_empty()
 {
-    t_model *model = malloc(sizeof(t_model));
-    *model = (t_model){0};
+	t_model *model = malloc(sizeof(t_model));
+	*model = (t_model){0};
 
-    model->mesh.vertices = (vec_vec3){0};
-    model->mesh.indices = (vec_GPUIndex){0};
-    model->mesh.normals = (vec_vec3){0};
-    model->normal_indices = (vec_GPUIndex){0};
-    model->mesh.uvs = (vec_vec2){0};
+	model->mesh.vertices = (vec_vec3){0};
+	model->mesh.indices = (vec_GPUIndex){0};
+	model->mesh.normals = (vec_vec3){0};
+	model->normal_indices = (vec_GPUIndex){0};
+	model->mesh.uvs = (vec_vec2){0};
 
-    return model;
-    // model->vertices = array_init(0, sizeof(t_vec3));
-    // model->indices = array_init(0, sizeof(GPUIndex));
-    // model->normals = array_init(0, sizeof(t_vec3));
-    // model->normal_indices = array_init(0, sizeof(GPUIndex));
-    // model->uvs = array_init(0, sizeof(t_vec2));
+	return model;
+	// model->vertices = array_init(0, sizeof(t_vec3));
+	// model->indices = array_init(0, sizeof(GPUIndex));
+	// model->normals = array_init(0, sizeof(t_vec3));
+	// model->normal_indices = array_init(0, sizeof(GPUIndex));
+	// model->uvs = array_init(0, sizeof(t_vec2));
 }
 
 void model_flatten(t_model *model)
 {
-    vec_vec3 temp_vertices;
-    vec_GPUIndex temp_indices;
+	vec_vec3 temp_vertices;
+	vec_GPUIndex temp_indices;
 
-    bool encountedSmall = false;
-    for (unsigned int i = 0; i < model->mesh.indices._len; i++) {
-        if (model->mesh.indices.data[i] < 1)
-        {
-            encountedSmall = true;
-            break;
-        }
-    }
+	bool encountedSmall = false;
+	for (unsigned int i = 0; i < model->mesh.indices._len; i++) {
+		if (model->mesh.indices.data[i] < 1)
+		{
+			encountedSmall = true;
+			break;
+		}
+	}
 
-    for (unsigned int i = 0; i < model->mesh.indices._len; i++) {
-        GPUIndex vertexIndex = model->mesh.indices.data[i];
-        t_vec3 vertex;
-        if (encountedSmall) {
-            vertex = model->mesh.vertices.data[vertexIndex];
-        }
-        else {
-            vertex = model->mesh.vertices.data[vertexIndex - 1];
-        }
+	for (unsigned int i = 0; i < model->mesh.indices._len; i++) {
+		GPUIndex vertexIndex = model->mesh.indices.data[i];
+		t_vec3 vertex;
+		if (encountedSmall) {
+			vertex = model->mesh.vertices.data[vertexIndex];
+		}
+		else {
+			vertex = model->mesh.vertices.data[vertexIndex - 1];
+		}
 
-        vec_vec3_push_back(&temp_vertices, vertex);
-        vec_GPUIndex_push_back(&temp_indices, vertexIndex);
-    }
+		vec_vec3_push_back(&temp_vertices, vertex);
+		vec_GPUIndex_push_back(&temp_indices, vertexIndex);
+	}
 
-    vec_vec3_drop(&model->mesh.vertices);
-    vec_GPUIndex_drop(&model->mesh.indices);
+	vec_vec3_drop(&model->mesh.vertices);
+	vec_GPUIndex_drop(&model->mesh.indices);
 
-    model->mesh.vertices = temp_vertices;
+	model->mesh.vertices = temp_vertices;
 	model->mesh.indices = temp_indices;
-    model->flattened = true;
+	model->flattened = true;
 }
 
 t_model *model_load(const char* file_path)
 {
-    t_model *model = model_create_empty();
+	t_model *model = model_create_empty();
 
-    vec_GPUIndex vertex_indices = {0}, uv_indices = {0}, normal_indices = {0};
+	vec_GPUIndex vertex_indices = {0}, uv_indices = {0}, normal_indices = {0};
 
-    vec_vec3 temp_vertices = {0};
-    // vec_vec2 temp_uvs = {0};
-    vec_vec3 temp_normals = {0};
-    map_GPUIndex vertex_normal_map = map_GPUIndex_init();
+	vec_vec3 temp_vertices = {0};
+	// vec_vec2 temp_uvs = {0};
+	vec_vec3 temp_normals = {0};
+	map_GPUIndex vertex_normal_map = map_GPUIndex_init();
 
 	FILE* file = fopen(file_path, "r");
 	if (file == NULL) {
@@ -85,12 +85,12 @@ t_model *model_load(const char* file_path)
 		if (strcmp(lineHeader, "v") == 0) {
 			static t_vec3 vertex;
 			fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
-            vec_vec3_push_back(&temp_vertices, vertex);
-        }
+			vec_vec3_push_back(&temp_vertices, vertex);
+		}
 		else if (strcmp(lineHeader, "vn") == 0) {
 			t_vec3 normal;
 			fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z);
-            vec_vec3_push_back(&temp_normals, normal);
+			vec_vec3_push_back(&temp_normals, normal);
 		}
 		else if (strcmp(lineHeader, "f") == 0) {
 			static GPUIndex vertexIndex[3], uvIndex[3], normalIndex[3];
@@ -102,9 +102,9 @@ t_model *model_load(const char* file_path)
 			}
 			else
 			{
-                map_GPUIndex_insert_or_assign(&vertex_normal_map, vertexIndex[0], normalIndex[0]);
-                map_GPUIndex_insert_or_assign(&vertex_normal_map, vertexIndex[1], normalIndex[1]);
-                map_GPUIndex_insert_or_assign(&vertex_normal_map, vertexIndex[2], normalIndex[2]);
+				map_GPUIndex_insert(&vertex_normal_map, vertexIndex[0], normalIndex[0]);
+				map_GPUIndex_insert(&vertex_normal_map, vertexIndex[1], normalIndex[1]);
+				map_GPUIndex_insert(&vertex_normal_map, vertexIndex[2], normalIndex[2]);
 
 				vec_GPUIndex_push_back(&vertex_indices, vertexIndex[0]);
 				vec_GPUIndex_push_back(&vertex_indices, vertexIndex[1]);
@@ -119,7 +119,7 @@ t_model *model_load(const char* file_path)
 
 		}
 	}
-    
+	
 	for (intptr_t i = 0; i < vertex_indices._len; i++)
 	{
 		vertex_indices.data[i] -= 1;
@@ -130,20 +130,22 @@ t_model *model_load(const char* file_path)
 		model->has_normals = true;
 	if (temp_normals._len == model->mesh.indices._len)
 	{
-        model_flatten(model);
+		printf("Flattening!\n");
+		model_flatten(model);
 		for (intptr_t i = 0; i < normal_indices._len; i++)
 		{
-            vec_vec3_push(&model->mesh.normals, temp_normals.data[normal_indices.data[i] - 1]);
+			vec_vec3_push(&model->mesh.normals, temp_normals.data[normal_indices.data[i] - 1]);
 		}
 	}
 	if (model->has_normals)
 	{
 		for (intptr_t i = 0; i < model->mesh.vertices._len; i++)
 		{
-            if (map_GPUIndex_contains(&vertex_normal_map, i + 1) == false)
-                break;
-            GPUIndex index = map_GPUIndex_get(&vertex_normal_map, i + 1)->second;
-            vec_vec3_push_back(&model->mesh.normals, temp_normals.data[index - 1]);
+			if (map_GPUIndex_contains(&vertex_normal_map, i + 1) == false)
+				break;
+			GPUIndex index = map_GPUIndex_get(&vertex_normal_map, i + 1)->second;
+			printf("%li/%d: %d,%d,%d\n", i, index, (int)temp_normals.data[index - 1].x, (int)temp_normals.data[index - 1].y, (int)temp_normals.data[index - 1].z);
+			vec_vec3_push_back(&model->mesh.normals, temp_normals.data[index - 1]);
 		}
 	}
 	return model;

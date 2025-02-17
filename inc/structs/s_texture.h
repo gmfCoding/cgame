@@ -12,6 +12,12 @@
 #ifndef S_TEXTURE_H
 # define S_TEXTURE_H
 
+typedef union u_colour
+{
+	int		rgba;
+	char	channels[4];
+}			t_ucolour;
+
 typedef struct s_texture
 {
 	t_ucolour	*data;
@@ -20,9 +26,5 @@ typedef struct s_texture
 	int			channel;
 }				t_texture;
 
-typedef union u_colour
-{
-	int		rgba;
-	char	channels[4];
-}			t_ucolour;
+
 #endif
