@@ -13,6 +13,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include "texture.h"
+#include "structs/s_texture.h"
 #ifdef __linux__
 
 static void	texture_init(t_texture tex)
@@ -72,7 +73,7 @@ void	texture_destroy(t_texture *tex, t_texture **tex_ptr, \
 t_texture	texture_load(const char *const path)
 {
 	t_texture	t;
-	t.data = (int *)stbi_load(path, &t.width, &t.height, &t.channel, 4);
+	t.data = (t_ucolour *)stbi_load(path, &t.width, &t.height, &t.channel, 4);
 	texture_init(t);
 	return (t);
 }

@@ -83,7 +83,7 @@ LIB-I = $(patsubst %,-I%,$(dir $(LIBS))) -I$(DIRLIB) $(STCINC) $(GLFWINC)
 LIB-l = $(subst lib,-l,$(basename $(notdir $(LIBSF))))
 LIB-L = $(patsubst %,-L$(DIRLIB)/%, $(dir $(LIBSF)))
 
-CC = cc
+CC = clang
 
 WFLAGS = # -Wall -Werror -Wextra
 CPPFLAGS =-I$(DIRINC) $(LIB-I) -MMD -MP
@@ -98,7 +98,11 @@ CONF = release
 CONF_TARGET = .target
 
 ifneq (,$(findstring debug,$(CONF)))
-OPTS = fsan,debug
+OPTS = none
+OPTS += debug
+ifneq (,$(findstring clang,$(CC)))
+	OPTS += fsan
+endif
 endif
 
 ifneq (,$(findstring dsym,$(CONF)))
@@ -122,8 +126,8 @@ ifneq (,$(findstring fsan,$(OPTS)))
 # And when using other sanitizers such as memory or undefined, it may be useful to not prematurely stop,
 # Use UBSAN_OPTIONS=halt_on_error=0 (need -fs..-recover=..) or equivelent
 # Also might be nice to redirect stderr to a file
-# USE 
-	DFLAGS += -fsanitize=$(SAN) -fsanitize-recover=$(SAN) 
+# USE 	
+	DFLAGS += -fsanitize=$(SAN) -fsanitize-recover=$(SAN)
 endif
 ifneq (,$(findstring gmon,$(OPTS)))
 	PGFLAGS += -pg
@@ -136,7 +140,7 @@ endif
 ifneq ($(OS),Linux) 
 LDFLAGS += -framework OpenGL -framework AppKit 
 else 
-LDFLAGS += -lX11 -lXext -lGL
+LDFLAGS += -lX11 -lGL
 endif
 
 # RULES

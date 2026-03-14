@@ -2,35 +2,43 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Python Debugger: Current File with Arguments",
-			"type": "debugpy",
+			"type": "lldb-mi",
 			"request": "launch",
-			"program": "${file}",
-			"console": "integratedTerminal",
-			"args": "assets/source/orbit/orbit_inst.sep"
+			"name": "Launch Program",
+			"target": "/app",
+			"cwd": "${workspaceRoot}",
+			"valuesFormatting": "parseText"
 		},
 		{
-			"type": "lldb",
-			"request": "attach",
-			"name": "LLDB Attach",
-			"program": "${workspaceFolder}/cub3D"
-		},
-		{
-			"type": "lldb",
+			"type": "gdb",
 			"request": "launch",
-			"name": "LLDB Launch",
-			"env": {"QT_QPA_PLATFORM":"x11", "XDG_SESSION_TYPE":"x11"},
-			"program": "${workspaceFolder}/app",
-			"args": [],
-			"cwd": "${workspaceFolder}"
+			"name": "Launch Program",
+			"target": "./app",
+			"cwd": "${workspaceRoot}",
+			"valuesFormatting": "parseText"
 		},
-		{
-			"name": "Launch",
-			"type": "cppdbg",
-			"request": "launch",
-			"program": "${workspaceFolder}/app",
-			"args": ["maps/map1.cub"],
-			"cwd": "${workspaceFolder}"
-		}
+		// {
+		// 	"name": "Python Debugger: Current File with Arguments",
+		// 	"type": "debugpy",
+		// 	"request": "launch",
+		// 	"program": "${file}",
+		// 	"console": "integratedTerminal",
+		// 	"args": "assets/source/orbit/orbit_inst.sep"
+		// },
+		// {
+		// 	"type": "lldb",
+		// 	"request": "attach",
+		// 	"name": "LLDB Attach",
+		// 	"program": "${workspaceFolder}/cub3D"
+		// },
+		// {
+		// 	"type": "lldb",
+		// 	"request": "launch",
+		// 	"name": "LLDB Launch",
+		// 	"env": {"QT_QPA_PLATFORM":"x11", "XDG_SESSION_TYPE":"x11"},
+		// 	"program": "${workspaceFolder}/app",
+		// 	"args": [],
+		// 	"cwd": "${workspaceFolder}"
+		// }
 	]
 }

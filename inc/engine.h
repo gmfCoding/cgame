@@ -14,6 +14,8 @@ typedef struct
 	t_render_ctx render_context;
 
 	uint32_t target_fps;
+
+	bool multi_thread_render;
 } t_engine;
 
 #endif

@@ -18,7 +18,6 @@ SRCSB =
 # TARGET NAME AND VARIBLES
 NAME = libcml.a
 OBJDIR = obj/
-CC = clang
 FLAGS = $(DFLAGS) -Wall -Wextra -Werror -g
 
 # OBJECT FILES

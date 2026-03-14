@@ -16,9 +16,17 @@
 
 #define ASSERT(x) if(!(x)) BREAKFUNC;
 
+// #define NO_GL_DEBUG
+
+#ifdef NO_GL_DEBUG
+#define GLCall(x) x
+#else
+
 #define GLCall(x) GLClearLog();\
 x;\
 ASSERT(GLLogCall(#x, __FILE__, __LINE__));\
+
+#endif
 
 static void GLClearLog()
 {

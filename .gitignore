@@ -10,3 +10,7 @@ app
 **/*.blend1
 **/*.blend2
 **/*.built
+build/
+.xmake/
+a.out*
+*.out

@@ -7,6 +7,7 @@
 #ifndef ASSET_H
 # define ASSET_H
 #include "io.h"
+#include <stddef.h>
 
 typedef enum
 {

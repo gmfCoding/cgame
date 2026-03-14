@@ -1,0 +1,8 @@
+-std=c11
+-Iinc
+-Ilib/STC/include
+-Ilib/cglm/include
+-Ilib/glfw/include
+-Ilib/glad/include
+-Ilib/stb_image/
+-D EXTRA
