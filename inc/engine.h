@@ -8,6 +8,10 @@
 typedef struct 
 {
 	GLFWwindow* window;
+
+	int width;
+	int height;
+
     t_inputctx input;
 
 	t_material_system material;

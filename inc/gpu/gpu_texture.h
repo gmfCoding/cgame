@@ -13,6 +13,6 @@ typedef struct t_gpu_texture
 	GLuint id;
 } t_gpu_texture;
 
-t_gpu_texture *gpu_texture_add(const char *name, const char *asset_path, int channels);
+void gpu_texture_add(t_gpu_texture* gpu_tex, const char *name, const char *asset_path, int channels);
 
 #endif

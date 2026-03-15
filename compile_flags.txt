@@ -1,8 +1,0 @@
--std=c23
--Iinc
--Ilib/STC/include
--Ilib/cglm/include
--Ilib/glfw/include
--Ilib/glad
--Ilib/stb_image/
--D EXTRA

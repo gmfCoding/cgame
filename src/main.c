@@ -1,4 +1,7 @@
 
+#include "cglm/euler.h"
+#include "cglm/quat.h"
+#include "cglm/vec3.h"
 #include "load_glad.h"
 #include <GLFW/glfw3.h>
 #include <string.h>
@@ -25,7 +28,8 @@
 #include "camera.h"
 #include "input.h"
 
-
+#include "core/procmesh.h"
+#include "transform.h"
 
 void materials_setup(t_material_system *system)
 {
@@ -44,12 +48,12 @@ void materials_setup(t_material_system *system)
 		gpu_shader_program_compile_vert_frag(basic_vertex, basic_fragment, &program);
 		t_shader *shader = material_system_shader_add(system, (t_shader){.shader_id = program, .name = "basic_colour_shader"});	
 		t_material *basic = material_system_mat_create(system, (t_material){.shader = shader, .name = "basic_colour_material"});
-		
-		vec_mat_prop props = {};
-		vec_mat_prop_push(&props, (t_mat_prop){.name = "MVP", .type=MPT_MAT4});
+
+		// vec_mat_prop props = {};
+		// vec_mat_prop_push(&props, (t_mat_prop){.name = "MVP", .type=MPT_MAT4});
 		material_prop_add_new(basic, "MVP", MPT_MAT4, MPT_DEFAULT);
 		material_prop_add_new(basic, "colour", MPT_FLOAT3, (t_mat_prop_value){.f3={1,1,0}});
-		
+
 		free(basic_fragment);
 		free(basic_vertex);
 	}
@@ -67,8 +71,11 @@ void materials_setup(t_material_system *system)
 		t_shader *shader = material_system_shader_add(system, (t_shader){.shader_id = program, .name = "basic_lit_shader"});	
 		t_material *lit = material_system_mat_create(system, (t_material){.shader = shader, .name = "basic_lit_material"});
 		
-		vec_mat_prop props = {};
-		vec_mat_prop_push(&props, (t_mat_prop){.name = "MVP", .type=MPT_MAT4});
+		t_gpu_texture texture;
+		gpu_texture_add(&texture, "crate", asset_get_path(path, 2, "textures", "uv.png"), 4);
+
+		material_prop_add_new(lit, "diffuse_tex", MPT_SAMPLER2D, (t_mat_prop_value){.texslot = {.tex = texture.id, .slot = GL_TEXTURE0}});	
+
 		material_prop_add_new(lit, "model", MPT_MAT4, MPT_DEFAULT);
 		material_prop_add_new(lit, "view", MPT_MAT4, MPT_DEFAULT);
 		material_prop_add_new(lit, "proj", MPT_MAT4, MPT_DEFAULT);
@@ -99,7 +106,9 @@ int engine_setup(t_engine *engine)
 	//glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
 	// const GLFWvidmode * mode = glfwGetVideoMode(mon);
 	// glfwInitHint(GLFW_RESIZABLE, GLFW_RESIZE_ALL_CURSOR);
-	engine->window = glfwCreateWindow(1920, 1080/2, "My Title", mon, NULL);
+	engine->width = 1920;
+	engine->height = 1080;
+	engine->window = glfwCreateWindow(engine->width, engine->height, "My Title", mon, NULL);
 	if (!engine->window)
 	{
 		glfwTerminate();
@@ -131,7 +140,7 @@ int render_thread(t_engine *engine)
 	char path[PATH_MAX];
 
 	glfwMakeContextCurrent(engine->window);
-	t_model *crate = model_load(asset_get_path(path, 2, "models", "sublatice.obj"));
+	t_model *crate = model_load(asset_get_path(path, 2, "models", "triangle.obj"));
 	//t_gpu_texture* texture = gpu_texture_add("unknown", );
 	t_gpu_mesh *mesh = gpu_mesh_add(&crate->mesh); 
 	(void)mesh;
@@ -139,6 +148,10 @@ int render_thread(t_engine *engine)
 	t_entity *ent = entity_create(ET_BASE);
 	ent->renderer = mesh_renderer_create(mesh, material_system_mat_get(&engine->material, "basic_lit_material"));
 	entity_render_attach(&engine->render_context, ent);
+
+	t_pm_grid grid = {0};
+	pm_grid_create(&grid, 10, 10, true);
+	t_mesh_renderer *grid_renderer = mesh_renderer_create(grid.gpu_mesh, material_system_mat_get(&engine->material, "basic_lit_material"));
 
 	t_mat_prop *lightPos = material_prop_get(ent->renderer->material, "lightPos");
 	t_mat_prop *lightColour = material_prop_get(ent->renderer->material, "lightColour");
@@ -174,7 +187,7 @@ int render_thread(t_engine *engine)
 
 		static float angle = 0.0;
 		angle += delta_time;
-
+		
 		float angleX = sin(angle) * 10;
 		float angleY = cos(angle * 0.5) * 10;
 		float angleZ = cos(angle) * 10;
@@ -182,6 +195,17 @@ int render_thread(t_engine *engine)
 		t_mat_prop *lightPos = material_prop_get(ent->renderer->material, "lightPos");
 		lightPos->value = (t_mat_prop_value){.f3 = {angleX, angleY, angleZ}};
 		material_prop_update(ent->renderer->material, lightPos);
+		
+		// t_mat_prop *lightPos2 = material_prop_get(grid_renderer->material, "lightPos");
+		// lightPos2->value = (t_mat_prop_value){.f3 = {angleX, angleY, angleZ}};
+		// material_prop_update(grid_renderer->material, lightPos2);
+
+		//glDisable(GL_CULL_FACE);
+		// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+		t_transform transform = TTRANSFORM_IDENTITY;
+		glm_euler_xyz_quat((vec3){0, 0, 0}, transform.rotation);
+		render_mesh_renderer(&engine->render_context, &transform, grid_renderer);
 
 		render_entities(&engine->render_context);
 		input_process(&engine->input);
@@ -191,11 +215,12 @@ int render_thread(t_engine *engine)
 		while (engine->target_fps > 0 && glfwGetTime() < lasttime + 1.0 / engine->target_fps) {
 			// TODO: Put the thread to sleep, yield, or simply do nothing
 		}
-		printf("dt:%f\n", 1/delta_time);
+		// printf("dt:%f\n", 1/delta_time);
 		lasttime += 1.0 / engine->target_fps;
 		if(!engine->multi_thread_render)
 			glfwPollEvents();
 	}
+	return 0;
 }
 
 int main(void)
@@ -210,7 +235,7 @@ int main(void)
 
 	engine.render_context.camera = CAMERA_DEFAULT;
 	glm_vec3_copy((vec3){0,0,10}, engine.render_context.camera.transform.position);
-	camera_init(&engine.render_context.camera, 70.0f, 4.0f / 3.0f, 0.1f, 100.0f);
+	camera_init(&engine.render_context.camera, 70.0f, (float)engine.width / (float)engine.height, 0.1f, 100.0f);
 	materials_setup(&engine.material);
 	glfwMakeContextCurrent(engine.window);
 	if (engine.multi_thread_render)

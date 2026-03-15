@@ -34,11 +34,14 @@ input/keys.c \
 input/mouse.c \
 gpu/shader.c \
 gpu/gpu_mesh.c \
+gpu/texture.c \
 core/material.c \
 core/entity.c \
 core/renderer.c \
 core/material_system.c \
 core/camera.c \
+core/proc_mesh_grid.c \
+world/hex_grid.c \
 model.c \
 system/io.c \
 asset.c
@@ -56,9 +59,9 @@ $(info Compiling for OS:$(OS))
 NAME = app
 
 DIRSRC = src
-DIROBJ = obj/$(CONF)
+DIROBJ = build/$(CONF)/obj
 DIRINC = inc
-DIRLIB = lib
+DIRLIB = vendor
 
 CMLLIB = libcml/libcml.a
 STBLIB = stb_image/libstb.a
@@ -114,7 +117,7 @@ OPFLAG = -O0
 endif
 ifneq (,$(findstring debug,$(OPTS)))
 	OPFLAG = -O0
-	DFLAGS += -gdwarf-4
+	DFLAGS += -g -ggdb -gdwarf-4
 endif
 ifneq (,$(findstring fdeb,$(OPTS)))
 	OPFLAG = -O1 -march=native

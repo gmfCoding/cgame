@@ -40,6 +40,10 @@ typedef union s_mat_prop_value
     vec4 f4;
 
     mat4 mat;
+    struct {
+        GLuint slot;
+        GLuint tex;
+    } texslot;
 } t_mat_prop_value;
 
 typedef enum e_mat_prop_type
@@ -57,7 +61,8 @@ typedef enum e_mat_prop_type
     MPT_FLOAT2,
     MPT_FLOAT3,
     MPT_FLOAT4,
-    MPT_MAT4
+    MPT_MAT4,
+    MPT_SAMPLER2D,
 } t_mat_prop_type;
 
 typedef struct s_mat_prop

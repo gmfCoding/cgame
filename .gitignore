@@ -14,3 +14,6 @@ build/
 .xmake/
 a.out*
 *.out
+.cache
+compile_commands.json
+compile_flags.*

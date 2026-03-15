@@ -14,11 +14,9 @@ static size_t sizes[] =
 
 void transform_get_mat4(t_transform *transform, mat4 value)
 {
-	mat4 quat;
-
-	glm_translate(value, transform->position);
-	glm_quat_mat4(transform->rotation, quat);
-	glm_mat4_mul(value, quat, value);
+    glm_mat4_identity(value);
+    glm_translate(value, transform->position);
+    glm_quat_rotate(value, transform->rotation, value);
     glm_scale(value, transform->scale);
     return;
 }

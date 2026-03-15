@@ -2,6 +2,8 @@
 #define TRANSFORM_H
 #include <cglm/quat.h>
 
+#define TTRANSFORM_IDENTITY (t_transform){.position={0,0,0}, .rotation=GLM_QUAT_IDENTITY_INIT, .scale={1,1,1}}
+
 typedef struct s_transform
 {
     vec3 position;

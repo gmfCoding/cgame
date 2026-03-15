@@ -29,6 +29,8 @@ typedef struct
     vec_vec2 uvs;
 } t_mesh;
 
+void mesh_create(t_mesh *mesh);
+
 typedef struct
 {
     t_mesh mesh;

@@ -1,17 +1,23 @@
 #include <inttypes.h>
 #include <stdio.h>
 #include "model.h"
+#include "cont/vec_vec3.h"
+
+void mesh_create(t_mesh *mesh)
+{
+	mesh->vertices = (vec_vec3){0};
+	mesh->indices = (vec_GPUIndex){0};
+	mesh->normals = (vec_vec3){0};
+	mesh->uvs = (vec_vec2){0};
+}
 
 t_model *model_create_empty()
 {
 	t_model *model = malloc(sizeof(t_model));
 	*model = (t_model){0};
-
-	model->mesh.vertices = (vec_vec3){0};
-	model->mesh.indices = (vec_GPUIndex){0};
-	model->mesh.normals = (vec_vec3){0};
+	mesh_create(&model->mesh);
+	
 	model->normal_indices = (vec_GPUIndex){0};
-	model->mesh.uvs = (vec_vec2){0};
 
 	return model;
 	// model->vertices = array_init(0, sizeof(t_vec3));
@@ -64,7 +70,7 @@ t_model *model_load(const char* file_path)
 	vec_GPUIndex vertex_indices = {0}, uv_indices = {0}, normal_indices = {0};
 
 	vec_vec3 temp_vertices = {0};
-	// vec_vec2 temp_uvs = {0};
+	vec_vec2 temp_uvs = {0};
 	vec_vec3 temp_normals = {0};
 	map_GPUIndex vertex_normal_map = map_GPUIndex_init();
 
@@ -91,6 +97,11 @@ t_model *model_load(const char* file_path)
 			t_vec3 normal;
 			fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z);
 			vec_vec3_push_back(&temp_normals, normal);
+		}
+		else if (strcmp(lineHeader, "vt") == 0) {
+			t_vec2 uv;
+			fscanf(file, "%f %f\n", &uv.x, &uv.y);
+			vec_vec2_push_back(&temp_uvs, uv);
 		}
 		else if (strcmp(lineHeader, "f") == 0) {
 			static GPUIndex vertexIndex[3], uvIndex[3], normalIndex[3];
@@ -126,6 +137,12 @@ t_model *model_load(const char* file_path)
 	}
 	model->mesh.vertices = temp_vertices;
 	model->mesh.indices = vertex_indices;
+
+	for (int i = 0; i < uv_indices._len; i++) {
+		model->has_uv = true;
+		vec_vec2_push(&model->mesh.uvs, temp_uvs.data[uv_indices.data[i] - 1]);
+	}
+
 	if (normal_indices._len > 0)
 		model->has_normals = true;
 	if (temp_normals._len == model->mesh.indices._len)
@@ -144,7 +161,7 @@ t_model *model_load(const char* file_path)
 			if (map_GPUIndex_contains(&vertex_normal_map, i + 1) == false)
 				break;
 			GPUIndex index = map_GPUIndex_get(&vertex_normal_map, i + 1)->second;
-			printf("%li/%d: %d,%d,%d\n", i, index, (int)temp_normals.data[index - 1].x, (int)temp_normals.data[index - 1].y, (int)temp_normals.data[index - 1].z);
+			// printf("%li/%d: %d,%d,%d\n", i, index, (int)temp_normals.data[index - 1].x, (int)temp_normals.data[index - 1].y, (int)temp_normals.data[index - 1].z);
 			vec_vec3_push_back(&model->mesh.normals, temp_normals.data[index - 1]);
 		}
 	}

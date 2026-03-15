@@ -48,7 +48,7 @@ void render_mesh_renderer(t_render_ctx *context, t_transform *transform, t_mesh_
 		if (prop != NULL)
 		{
 			glm_mat4_identity(prop->value.mat);
-			glm_translate(prop->value.mat, transform->position);
+			transform_get_mat4(transform, prop->value.mat);
 			material_prop_update(renderer->material, prop);
 		}
 	}
