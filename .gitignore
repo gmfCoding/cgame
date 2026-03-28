@@ -17,3 +17,5 @@ a.out*
 .cache
 compile_commands.json
 compile_flags.*
+.no/
+.vscode/c_cpp_properties.json
