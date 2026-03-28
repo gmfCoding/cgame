@@ -5,6 +5,7 @@
 typedef struct s_material_system t_material_system;
 typedef struct s_shader t_shader;
 typedef struct s_material t_material;
+typedef struct s_render_ctx t_render_ctx;
 
 #include "stc/cstr.h"
 #include "cont/vec_mat_prop.h"
@@ -41,7 +42,7 @@ t_mat_prop *material_prop_get(t_material *mat, const char* name);
 /// @param name 
 void material_prop_update(t_material *material, t_mat_prop *prop);
 
-void material_apply(t_material *mat);
+void material_apply(t_render_ctx* context, t_material *mat);
 
 /// @brief Adds a new property to the given material
 /// @param mat

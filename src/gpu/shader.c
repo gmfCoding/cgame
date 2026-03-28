@@ -76,3 +76,60 @@ int gpu_shader_program_compile_vert_frag(const char* vert, const char *frag, GLu
         *program = program_id;
     return program == NULL;
 }
+
+/// @brief Compiles vert and frag into a shader program
+/// @param vert path to the vertex shader
+/// @param frag path to the frament shader
+/// @param program pointer to GLuint to store the output 
+/// @return 0 on success and 1 on failure
+#include <string.h>
+int gpu_shader_program_compile_vert_frag_geo(const char* vert, const char *frag, const char *geo, GLuint* program)
+{
+    char *vert_source = io_fileread(vert);
+    char *frag_source = io_fileread(frag);
+    char *geo_source = io_fileread(geo);
+
+    const char *vert_source2[1];
+    const char *frag_source2[1];
+    const char *geo_source2[1];
+    vert_source2[0] = vert_source;
+    frag_source2[0] = frag_source;
+    geo_source2[0] = geo_source;
+
+    if (vert_source == NULL && frag_source != NULL)
+        free((void*)frag_source);
+    if (frag_source == NULL && vert_source != NULL)
+        free((void*)vert_source);
+    if (frag_source == NULL || vert_source == NULL || geo_source == NULL)
+        return 1;
+
+    GLCall(GLuint vert_shader = glCreateShader(GL_VERTEX_SHADER));
+    GLCall(glShaderSource(vert_shader, 1, vert_source2, NULL));
+    GLCall(glCompileShader(vert_shader));
+    gpu_shader_debug_shader(vert_shader);
+
+    GLCall(GLuint geo_shader = glCreateShader(GL_GEOMETRY_SHADER));
+    GLCall(glShaderSource(geo_shader, 1, geo_source2, NULL));
+    GLCall(glCompileShader(geo_shader));
+    gpu_shader_debug_shader(geo_shader);
+
+    GLCall(GLuint frag_shader = glCreateShader(GL_FRAGMENT_SHADER));
+    GLCall(glShaderSource(frag_shader, 1, frag_source2, NULL));
+    GLCall(glCompileShader(frag_shader));
+    gpu_shader_debug_shader(frag_shader);
+
+    GLCall(GLuint program_id = glCreateProgram());
+    GLCall(glAttachShader(program_id, geo_shader));
+    GLCall(glAttachShader(program_id, vert_shader));
+    GLCall(glAttachShader(program_id, frag_shader));
+    GLCall(glLinkProgram(program_id));
+
+    gpu_shader_debug_program(program_id);
+
+
+    GLCall(glDeleteShader(vert_shader));
+    GLCall(glDeleteShader(frag_shader));
+    if (program != NULL)
+        *program = program_id;
+    return program == NULL;
+}

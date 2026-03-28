@@ -2,12 +2,26 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"type": "lldb-mi",
+			"type": "cppdbg",
 			"request": "launch",
 			"name": "Launch Program",
-			"target": "/app",
+			"program": "${workspaceRoot}/app",
+			"symbolLoadInfo": {
+				"loadAll": true,
+				"exceptionList": ""
+			},
 			"cwd": "${workspaceRoot}",
-			"valuesFormatting": "parseText"
+		},
+		{
+			"type": "cppdbg",
+			"request": "attach",
+			"name": "Attach Program",
+			"program": "${workspaceRoot}/app",
+			"symbolLoadInfo": {
+				"loadAll": false,
+				"exceptionList": ""
+			},
+			"cwd": "${workspaceRoot}",
 		},
 		{
 			"type": "gdb",

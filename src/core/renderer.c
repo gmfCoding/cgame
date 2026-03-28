@@ -12,6 +12,12 @@ void render_entities(t_render_ctx *ctx)
         render_entity((*i.ref));
 }
 
+void render_gpu_line_list(t_gpu_line_list *line_list)
+{
+	GLCall(glBindVertexArray(line_list->m_vao));
+	GLCall(glDrawArrays(GL_LINES, 0, line_list->count * 2));
+}
+
 void render_gpu_mesh(t_gpu_mesh *mesh)
 {
     GLCall(glBindVertexArray(mesh->m_vao));
@@ -27,64 +33,97 @@ t_mesh_renderer *mesh_renderer_create(t_gpu_mesh *mesh, t_material *material)
     return renderer;
 }
 
-void render_mesh_renderer(t_render_ctx *context, t_transform *transform, t_mesh_renderer *renderer)
+static void render_mesh_render_default_props(t_render_ctx *context, t_material* material, t_transform *transform)
 {
-	if (transform == NULL || renderer->mesh == NULL)
-		return;
-
 	{
-		t_mat_prop *prop = material_prop_get(renderer->material, "MVP");
+		t_mat_prop *prop = material_prop_get(material, "MVP");
 		if (prop != NULL)
 		{
 			glm_mat4_identity(prop->value.mat);
 			transform_get_mat4(transform, prop->value.mat);
 			glm_mat4_mul(context->camera.premultPV, prop->value.mat, prop->value.mat);
-			material_prop_update(renderer->material, prop);
+			material_prop_update(material, prop);
 		}
 	}
 
 	{
-		t_mat_prop *prop = material_prop_get(renderer->material, "model");
+		t_mat_prop *prop = material_prop_get(material, "model");
 		if (prop != NULL)
 		{
 			glm_mat4_identity(prop->value.mat);
 			transform_get_mat4(transform, prop->value.mat);
-			material_prop_update(renderer->material, prop);
+			material_prop_update(material, prop);
 		}
 	}
 
 	{
-		t_mat_prop *prop = material_prop_get(renderer->material, "view");
+		t_mat_prop *prop = material_prop_get(material, "view");
 		if (prop != NULL)
 		{
 			glm_mat4_identity(prop->value.mat);
 			glm_mat4_copy(context->camera.view, prop->value.mat);
-			material_prop_update(renderer->material, prop);
+			material_prop_update(material, prop);
 		}
 	}
 
 	{
-		t_mat_prop *prop = material_prop_get(renderer->material, "proj");
+		t_mat_prop *prop = material_prop_get(material, "proj");
 		if (prop != NULL)
 		{
 			glm_mat4_identity(prop->value.mat);
 			glm_mat4_copy(context->camera.projection, prop->value.mat);
-			material_prop_update(renderer->material, prop);
+			material_prop_update(material, prop);
 		}
 	}
 
 	{
-		t_mat_prop *prop = material_prop_get(renderer->material, "proj");
+		t_mat_prop *prop = material_prop_get(material, "proj");
 		if (prop != NULL)
 		{
 			glm_mat4_identity(prop->value.mat);
 			glm_mat4_copy(context->camera.projection, prop->value.mat);
-			material_prop_update(renderer->material, prop);
+			material_prop_update(material, prop);
 		}
 	}
 
-	material_apply(renderer->material);
+	if (context->active_shader != material->shader)
+	{
+		t_mat_prop *prop = material_prop_get(material, "lightPos");
+		if (prop != NULL)
+		{
+			prop->value = (t_mat_prop_value){.f3 = {context->lightPos[0], context->lightPos[1], context->lightPos[2]}};
+			material_prop_update(material, prop);
+		}
+
+		t_mat_prop *lightColour = material_prop_get(material, "lightColour");
+		if (lightColour != NULL)
+		{
+			lightColour->value = (t_mat_prop_value){.f3 = {context->lightColour[0], context->lightColour[1], context->lightColour[2]}};
+			material_prop_update(material, lightColour);
+		}
+	}
+} 
+
+void render_mesh_renderer(t_render_ctx *context, t_transform *transform, t_mesh_renderer *renderer)
+{
+	if (transform == NULL || renderer->mesh == NULL)
+		return;
+
+	render_mesh_render_default_props(context, renderer->material, transform);
+
+	material_apply(context, renderer->material);
 	render_gpu_mesh(renderer->mesh);
+	if (renderer->render_mesh_normals)
+	{
+		t_gpu_line_list *line_list = &renderer->mesh->line_list;
+		if (line_list->count == 0)
+			gpu_mesh_line_from_normals(renderer->mesh, &line_list);
+		t_material *material = material_system_mat_get(&context->material_system, "normal_line_material");
+		render_mesh_render_default_props(context, material, transform);
+
+		material_apply(context, material);
+		render_gpu_line_list(&renderer->mesh->line_list);
+	}
 }
 
 void render_entity(t_entity *entity)

@@ -1,6 +1,7 @@
 #include "material.h"
 #include "load_glad.h"
 #include "shader.h"
+#include "renderer.h"
 
 t_mat_prop *material_prop_get(t_material *mat, const char* name)
 {
@@ -77,11 +78,12 @@ void material_prop_update(t_material *material, t_mat_prop *prop)
 	prop->dirty = true;
 }
 
-void material_apply(t_material *mat)
+void material_apply(t_render_ctx* context, t_material *mat)
 {
 	if (mat->shader == NULL)
 		return;
 	glUseProgram(mat->shader->shader_id);
+	context->active_shader  = mat->shader;
 	if (mat->dirty == false)
 		return;
 	mat->dirty = false;

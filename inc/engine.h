@@ -14,7 +14,6 @@ typedef struct
 
     t_inputctx input;
 
-	t_material_system material;
 	t_render_ctx render_context;
 
 	uint32_t target_fps;

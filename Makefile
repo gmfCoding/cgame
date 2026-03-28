@@ -70,7 +70,7 @@ GLFWDIR = $(DIRLIB)/$(dir $(GLFWLIB))
 
 GLADLIB = glad/libglad.a
 
-STCINC = -I$(DIRLIB)/STC/include -I$(DIRLIB)/cglm/include
+STCINC = -I$(DIRLIB)/STC/include -I$(DIRLIB)/cglm/include -I/home/clovell/Downloads/renderdoc_1.43/include
 GLFWINC = -I$(GLFWDIR)include
 
 LIBSF = $(CMLLIB) $(STBLIB) $(GLADLIB) $(GLFWLIB)
@@ -88,7 +88,7 @@ LIB-L = $(patsubst %,-L$(DIRLIB)/%, $(dir $(LIBSF)))
 
 CC = clang
 
-WFLAGS = # -Wall -Werror -Wextra
+WFLAGS = -Wall -Wextra #-Werror -Wno-unused-variable
 CPPFLAGS =-I$(DIRINC) $(LIB-I) -MMD -MP
 CFLAGS = $(OPFLAG) $(DFLAGS) $(XCFLAGS) $(WFLAGS)
 LDFLAGS = $(OPFLAG) $(DFLAGS) $(XLDFLAGS) $(LIB-L) $(LIB-l) -lz -lm -lpthread -ldl

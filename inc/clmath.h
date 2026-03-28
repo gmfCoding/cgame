@@ -21,6 +21,10 @@
 #  define M_TAU 6.2831853072
 # endif
 
+/* Macros for min/max.  */
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#define MAX(a,b) (((a)>(b))?(a):(b))
+
 double	angle_diff(double a, double b);
 double	cl_atan2(double x, double y);
 double	facos(double x);

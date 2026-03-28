@@ -90,7 +90,7 @@ void mesh_calculate_normals(t_mesh *mesh)
         t_vec3 edge1 = v3sub(v1, v0);
         t_vec3 edge2 = v3sub(v2, v0);
         t_vec3 face_normal = v3cross(edge1, edge2);
-        face_normal = v3inv(face_normal);
+        face_normal = v3rev(face_normal);
 
         mesh->normals.data[i0] = v3add(mesh->normals.data[i0], face_normal);
         mesh->normals.data[i1] = v3add(mesh->normals.data[i1], face_normal);

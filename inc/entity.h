@@ -19,6 +19,7 @@ typedef struct s_mesh_renderer
 {
     t_gpu_mesh *mesh;
 	t_material *material;
+    bool render_mesh_normals;
 } t_mesh_renderer;
 
 typedef struct s_entity

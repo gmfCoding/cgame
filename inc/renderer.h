@@ -3,16 +3,23 @@
 
 #include "cont/set_entptr.h"
 #include "camera.h"
+#include "material_system.h"
 
 typedef struct s_mesh_renderer t_mesh_renderer;
 typedef struct s_transform t_transform;
 typedef struct s_entity t_entity;
 typedef struct s_material t_material;
+typedef struct s_shader t_shader;
+typedef struct s_gpu_mesh t_gpu_mesh;
 
 typedef struct s_render_ctx
 {
     set_entptr entities;
 	t_camera camera;
+    t_shader* active_shader;
+    vec3 lightPos;
+    vec3 lightColour;
+    t_material_system material_system;
 } t_render_ctx;
 
 t_mesh_renderer* mesh_renderer_create(t_gpu_mesh *mesh, t_material *material);
