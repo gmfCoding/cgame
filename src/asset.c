@@ -47,13 +47,10 @@ char *asset_get_path(char current[PATH_MAX], size_t argc, ...)
     va_list list;
 
     va_start(list, argc);
-    char *exec_dir = io_get_executable_dir();
-
-    current[0] = '\0';
-    cl_strlcat(current, exec_dir, PATH_MAX);
-    free(exec_dir);
+    io_get_executable_dir(current);
     io_merge_path_curr(current, "assets");
-
+    io_divide_end(current);
+    
     for (size_t i = 0; i < argc; i++)
         io_merge_path_curr(current, va_arg(list, char *));
     return current;

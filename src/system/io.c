@@ -38,21 +38,16 @@
 
 
 
-char* io_get_executable_filepath() {
-   char rawPathName[MAX_PATH];
-   GetModuleFileNameA(NULL, rawPathName, MAX_PATH);
-   return char*(rawPathName);
+char* io_get_executable_filepath(char path[MAX_PATH]) {
+   GetModuleFileNameA(NULL, path, MAX_PATH);
+   return path;
 }
 
 // TODO: delete[] causing breaks?   
-char* io_get_executable_dir() {
-    char* executablePath = io_get_executable_filepath();
-    char* exePath = new char[executablePath.length() + 1]; 
-    strcpy_s(exePath, executablePath.length() + 1, executablePath.c_str());
-    PathRemoveFileSpecA(exePath);
-    char* directory = char*(exePath);
-    delete[] exePath;
-    return directory;
+char* io_get_executable_dir(char path[MAX_PATH]) {
+    char* executablePath = io_get_executable_filepath(path);
+    PathRemoveFileSpecA(path);
+    return path;
 }
 
 char* mergePaths(char* pathA, char* next) {
@@ -64,8 +59,15 @@ char* mergePaths(char* pathA, char* next) {
 
 #endif
 
+
 #ifdef __linux__
 
+void io_divide_end(char path[PATH_MAX])
+{
+    size_t len = strlen(path);
+    if (len > 0 && path[len - 1] != '/')
+        cl_strlcat(path, "/", PATH_MAX);
+}
 
 char *io_fileread(const char *path)
 {		
@@ -103,19 +105,20 @@ char *io_fileread(const char *path)
     return buffer;
 }
 
-char* io_get_executable_filepath()
+char* io_get_executable_filepath(char path[PATH_MAX])
 {
-   char rawPathName[PATH_MAX];
-   realpath(PROC_SELF_EXE, rawPathName);
-   return strdup(rawPathName);
+   realpath(PROC_SELF_EXE, path);
+   return path;
 }
 
-char* io_get_executable_dir()
+char* io_get_executable_dir(char path[PATH_MAX])
 {
-    char* executablePath = io_get_executable_filepath();
-    char* executableDir = strdup(dirname(executablePath));
-    free(executablePath);
-    return executableDir;
+    char path2[PATH_MAX];
+    char* executablePath = io_get_executable_filepath(path2);
+    char* executableDir = dirname(path2);
+    strncpy(path, executableDir, PATH_MAX);
+    io_divide_end(path);
+    return path;
 }
 
 char* io_merge_path(char* pathA, char* next)
@@ -123,14 +126,14 @@ char* io_merge_path(char* pathA, char* next)
     char path[PATH_MAX] = "";
 
     cl_strlcat(path, pathA, PATH_MAX);
-    cl_strlcat(path, "/", PATH_MAX);
+    io_divide_end(path);
     cl_strlcat(path, next, PATH_MAX);
     return strdup(path);
 }
 
 void io_merge_path_curr(char path[PATH_MAX], const char* next)
 {
-    cl_strlcat(path, "/", PATH_MAX);
+    io_divide_end(path);
     cl_strlcat(path, next, PATH_MAX);
 }
 

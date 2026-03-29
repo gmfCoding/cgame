@@ -34,126 +34,12 @@
 #include "core/procmesh.h"
 #include "transform.h"
 
-void materials_setup(t_material_system *system)
-{
-	char path[PATH_MAX];
-	
-	{
-		path[0] = '\0';
-		asset_get_path(path, 2, "shaders", "basic_colour_vertex.glsl");
-		char *basic_vertex = strdup(path);
-		
-		path[0] = '\0';
-		asset_get_path(path, 2, "shaders", "basic_colour_fragment.glsl");
-		char *basic_fragment = strdup(path);
-		
-		GLuint program;
-		gpu_shader_program_compile_vert_frag(basic_vertex, basic_fragment, &program);
-		t_shader *shader = material_system_shader_add(system, (t_shader){.shader_id = program, .name = "basic_colour_shader"});	
-		t_material *basic = material_system_mat_create(system, (t_material){.shader = shader, .name = "basic_colour_material"});
-
-		// vec_mat_prop props = {};
-		// vec_mat_prop_push(&props, (t_mat_prop){.name = "MVP", .type=MPT_MAT4});
-		material_prop_add_new(basic, "MVP", MPT_MAT4, MPT_DEFAULT);
-		material_prop_add_new(basic, "colour", MPT_FLOAT3, (t_mat_prop_value){.f3={1,1,0}});
-
-		free(basic_fragment);
-		free(basic_vertex);
-	}
-
-	{
-		path[0] = '\0';
-		asset_get_path(path, 2, "shaders", "basic_lit_vertex.glsl");
-		char *basic_vertex = strdup(path);
-		path[0] = '\0';
-		asset_get_path(path, 2, "shaders", "basic_lit_fragment.glsl");
-		char *basic_fragment = strdup(path);
-		path[0] = '\0';
-		asset_get_path(path, 2, "shaders", "basic_lit_geo.glsl");
-		char *basic_geo = strdup(path);
-
-		GLuint program;
-		gpu_shader_program_compile_vert_frag_geo(basic_vertex, basic_fragment,basic_geo, &program);
-		t_shader *shader = material_system_shader_add(system, (t_shader){.shader_id = program, .name = "basic_lit_norm_shader"});	
-		t_material *lit = material_system_mat_create(system, (t_material){.shader = shader, .name = "basic_lit_norm_material"});
-		
-		t_gpu_texture texture;
-		gpu_texture_add(&texture, "crate", asset_get_path(path, 2, "textures", "uv.png"), 4);
-
-		material_prop_add_new(lit, "diffuse_tex", MPT_SAMPLER2D, (t_mat_prop_value){.texslot = {.tex = texture.id, .slot = GL_TEXTURE0}});	
-
-		material_prop_add_new(lit, "model", MPT_MAT4, MPT_DEFAULT);
-		material_prop_add_new(lit, "view", MPT_MAT4, MPT_DEFAULT);
-		material_prop_add_new(lit, "proj", MPT_MAT4, MPT_DEFAULT);
-
-		material_prop_add_new(lit, "lightColour", MPT_FLOAT3, MPT_DEFAULT);
-		material_prop_add_new(lit, "lightPos", MPT_FLOAT3, MPT_DEFAULT);
-		material_prop_add_new(lit, "viewPos", MPT_FLOAT3, MPT_DEFAULT);
-
-		material_prop_add_new(lit, "colour", MPT_FLOAT3, (t_mat_prop_value){.f3={1,1,0}});
-		
-		free(basic_fragment);
-		free(basic_vertex);
-		free(basic_geo);
-	}
-
-	{
-		path[0] = '\0';
-		asset_get_path(path, 2, "shaders", "normal_line_vertex.glsl");
-		char *vert = strdup(path);
-
-		path[0] = '\0';
-		asset_get_path(path, 2, "shaders", "normal_line_fragment.glsl");
-		char *frag = strdup(path);
-
-		GLuint program;
-		gpu_shader_program_compile_vert_frag(vert, frag, &program);
-		t_shader *shader = material_system_shader_add(system, (t_shader){.shader_id = program, .name = "normal_line_shader"});
-		t_material *mat = material_system_mat_create(system, (t_material){.shader = shader, .name = "normal_line_material"});
-
-		material_prop_add_new(mat, "MVP", MPT_MAT4, MPT_DEFAULT);
-		material_prop_add_new(mat, "colour", MPT_FLOAT3, (t_mat_prop_value){.f3 = {0, 1, 1}});
-
-		free(vert);
-		free(frag);
-	}
-
-	{
-		path[0] = '\0';
-		asset_get_path(path, 2, "shaders", "basic_lit_vertex.glsl");
-		char *basic_vertex = strdup(path);
-		path[0] = '\0';
-		asset_get_path(path, 2, "shaders", "basic_lit_fragment.glsl");
-		char *basic_fragment = strdup(path);
-
-		GLuint program;
-		gpu_shader_program_compile_vert_frag(basic_vertex, basic_fragment, &program);
-		t_shader *shader = material_system_shader_add(system, (t_shader){.shader_id = program, .name = "basic_lit_shader"});	
-		t_material *lit = material_system_mat_create(system, (t_material){.shader = shader, .name = "basic_lit_material"});
-		
-		t_gpu_texture texture;
-		gpu_texture_add(&texture, "crate", asset_get_path(path, 2, "textures", "uv.png"), 4);
-
-		material_prop_add_new(lit, "diffuse_tex", MPT_SAMPLER2D, (t_mat_prop_value){.texslot = {.tex = texture.id, .slot = GL_TEXTURE0}});	
-
-		material_prop_add_new(lit, "model", MPT_MAT4, MPT_DEFAULT);
-		material_prop_add_new(lit, "view", MPT_MAT4, MPT_DEFAULT);
-		material_prop_add_new(lit, "proj", MPT_MAT4, MPT_DEFAULT);
-
-		material_prop_add_new(lit, "lightColour", MPT_FLOAT3, MPT_DEFAULT);
-		material_prop_add_new(lit, "lightPos", MPT_FLOAT3, MPT_DEFAULT);
-		material_prop_add_new(lit, "viewPos", MPT_FLOAT3, MPT_DEFAULT);
-
-		material_prop_add_new(lit, "colour", MPT_FLOAT3, (t_mat_prop_value){.f3={1,1,0}});
-		
-		free(basic_fragment);
-		free(basic_vertex);
-	}
-}
-
 int engine_setup(t_engine *engine)
 {
-/* Initialize the library */
+	engine->control_flags = ENGINE_CONTROL_DEFAULT;
+	if (engine->prehook && engine->prehook(engine, engine->prehook_context) != ENGINE_HOOK_RESULT_CONTINUE)
+		return -1;
+	/* Initialize the library */
 	glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
 	if (!glfwInit())
 		return -1;
@@ -193,6 +79,8 @@ int engine_setup(t_engine *engine)
 		return -1;
 	}
 	glfwShowWindow(engine->window);
+	if (engine->posthook && engine->posthook(engine, engine->hook_context) != ENGINE_HOOK_RESULT_CONTINUE)
+		return -1;
 	return 0;
 }
 
@@ -248,6 +136,37 @@ int engine_setup(t_engine *engine)
 //     }
 // }
 
+static void render_thread_preframe(t_engine *engine)
+{
+	int flags = 0;
+	if (ENGINE_HAS_CONTROL_FLAG(engine, ENGINE_CONTROL_RENDER_DO_CLEAR_COLOUR))
+	{
+		GLCall(glClearColor(.2,.2,.6,1));
+		flags |= GL_COLOR_BUFFER_BIT;
+	}
+	if (ENGINE_HAS_CONTROL_FLAG(engine, ENGINE_CONTROL_RENDER_DO_CLEAR_DEPTH))
+		flags |= GL_DEPTH_BUFFER_BIT;
+	if (ENGINE_HAS_CONTROL_FLAG(engine, ENGINE_CONTROL_RENDER_DO_CLEAR_COLOUR | ENGINE_CONTROL_RENDER_DO_CLEAR_DEPTH))
+		glClear(flags);
+}
+
+static void render_thread_camera(t_engine *engine, float delta_time)
+{
+	camera_view_update(&engine->render_context.camera);
+
+	t_move move = {0};
+
+	move.Forward = input_keyheld(&engine->input, KEY_W);
+	move.Backwards = input_keyheld(&engine->input, KEY_S);
+	move.Left = input_keyheld(&engine->input, KEY_A);
+	move.Right = input_keyheld(&engine->input, KEY_D);
+	move.Up = input_keyheld(&engine->input, KEY_E);
+	move.Down = input_keyheld(&engine->input, KEY_Q);
+
+	camera_control_look(&engine->render_context.camera, &engine->input);
+	camera_control(&engine->render_context.camera, &move, delta_time);
+}
+
 int render_thread(t_engine *engine)
 {
 	char path[PATH_MAX];
@@ -261,27 +180,6 @@ int render_thread(t_engine *engine)
 	// 	if (glfwGetKey(engine->window, GLFW_KEY_F12) == GLFW_PRESS)
 	// 		loopme = 0;
 	// }
-
-	t_entity *light = entity_create(ET_BASE);
-	{
-		t_model *model = model_load(asset_get_path(path, 2, "models", "cube_fwn.obj"));
-		t_gpu_mesh *mesh = gpu_mesh_add(&model->mesh);
-		light->renderer = mesh_renderer_create(mesh, material_system_mat_get(&engine->render_context.material_system, "basic_lit_material"));
-		light->renderer->render_mesh_normals = true;
-		entity_render_attach(&engine->render_context, light);
-	}
-
-	// t_entity *ent = entity_create(ET_BASE);
-	// t_model *crate = model_load(asset_get_path(path, 2, "models", "triangle.obj"));
-	// {
-	// 	t_gpu_mesh *mesh = gpu_mesh_add(&crate->mesh); 
-	// 	ent->renderer = mesh_renderer_create(mesh, material_system_mat_get(&engine->render_context.material_system, "basic_lit_material"));
-	// 	entity_render_attach(&engine->render_context, ent);
-	// } 
-		
-	t_pm_grid grid = {0};
-	pm_grid_create(&grid, 1, 1, true);
-	t_mesh_renderer *grid_renderer = mesh_renderer_create(grid.gpu_mesh, material_system_mat_get(&engine->render_context.material_system, "basic_lit_material"));
 
 	double delta_time = 0;
 	double time_last_frame = 0;
@@ -302,51 +200,27 @@ int render_thread(t_engine *engine)
 
 		delta_time = glfwGetTime() - time_last_frame;
 		time_last_frame = glfwGetTime();
-		GLCall(glClearColor(.2,.2,.6,1));
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		camera_view_update(&engine->render_context.camera);
+		engine->delta_time = delta_time;
 
-		t_move move = {0};
+		if (engine->render_thread_frame_prehook && engine->render_thread_frame_prehook(engine, engine->render_thread_context) != ENGINE_HOOK_RESULT_CONTINUE)
+			return -1;
+		render_thread_preframe(engine);
 
+		if (ENGINE_HAS_CONTROL_FLAG(engine, ENGINE_CONTROL_RENDER_DO_DEFAULT_CAMERA_UPDATE))
+			render_thread_camera(engine, delta_time);
 
-
-		move.Forward = input_keyheld(&engine->input, KEY_W);
-		move.Backwards = input_keyheld(&engine->input, KEY_S);
-		move.Left = input_keyheld(&engine->input, KEY_A);
-		move.Right = input_keyheld(&engine->input, KEY_D);
-		move.Up = input_keyheld(&engine->input, KEY_E);
-		move.Down = input_keyheld(&engine->input, KEY_Q);
-
-		camera_control_look(&engine->render_context.camera, &engine->input);
-		camera_control(&engine->render_context.camera, &move, delta_time);
-
-		static float angle = 0.0;
-		angle += delta_time;
-		
-		float angleX = sin(angle) * 10;
-		float angleY = cos(angle * 0.5) * 10;
-		float angleZ = cos(angle) * 10;
+		if (ENGINE_HAS_CONTROL_FLAG(engine, ENGINE_CONTROL_RENDER_BACK_FACE_CULLING))
+			glEnable(GL_CULL_FACE);
+		else
+			glDisable(GL_CULL_FACE);
 
 
-		engine->render_context.lightPos[0] = angleX;
-		engine->render_context.lightPos[1] = angleY;
-		engine->render_context.lightPos[2] = angleZ;
-		engine->render_context.lightColour[0] = 1;
-		engine->render_context.lightColour[1] = 0;
-		engine->render_context.lightColour[2] = 1;
-		// t_mat_prop *lightPos = material_prop_get(ent->renderer->material, "lightPos");
-		// lightPos->value = (t_mat_prop_value){.f3 = {angleX, angleY, angleZ}};
-		// material_prop_update(ent->renderer->material, lightPos);
-		
-		// t_mat_prop *lightPos2 = material_prop_get(grid_renderer->material, "lightPos");
-		// lightPos2->value = (t_mat_prop_value){.f3 = {angleX, angleY, angleZ}};
-		// material_prop_update(grid_renderer->material, lightPos2);
-
-		glDisable(GL_CULL_FACE);
+		if (engine->render_thread_frame_interhook && engine->render_thread_frame_interhook(engine, engine->render_thread_context) != ENGINE_HOOK_RESULT_CONTINUE)
+			return -1;
 		// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-		t_transform transform = TTRANSFORM_IDENTITY;
-		glm_euler_xyz_quat((vec3){90, 0, 0}, transform.rotation);
+		// t_transform transform = TTRANSFORM_IDENTITY;
+		// glm_euler_xyz_quat((vec3){90, 0, 0}, transform.rotation);
 		//render_mesh_renderer(&engine->render_context, &transform, grid_renderer);
 
 		render_entities(&engine->render_context);
@@ -372,7 +246,23 @@ int render_thread(t_engine *engine)
 	return 0;
 }
 
-int main(void)
+#include "hcscenes/scenes.h"
+
+void scene_select(t_engine* engine, char* name)
+{
+	if (strncmp(name, "cubes", 10) == 0)
+		engine->prehook = scene_setup_cube_array;
+	// else if (strncmp(name, "model_viewer", 12) == 0)
+	// 	engine->prehook = scene_setup_model_viewer;	
+	// else if (strncmp(name, "procmesh", 8) == 0)
+	// 	engine->prehook = scene_setup_procmesh;
+	// else if (strncmp(name, "instancing", 10) == 0)
+	// 	engine->prehook = scene_setup_instancing;
+	// else if (strncmp(name, "example", 14) == 0)
+	// 	engine->prehook = scene_setup_example;
+}
+
+int main(int argc, char** argv)
 {
 	t_engine engine = {0};
 	engine.target_fps = 144;
@@ -381,13 +271,17 @@ int main(void)
 
 	// init_renderdoc();
 
+	if (argc >= 2)
+		scene_select(&engine, argv[1]);
+	else
+		scene_select(&engine, "cubes");
+
 	if (engine_setup(&engine) != 0)
 		return -1;
 
-	engine.render_context.camera = CAMERA_DEFAULT;
-	glm_vec3_copy((vec3){0,0,10}, engine.render_context.camera.transform.position);
-	camera_init(&engine.render_context.camera, 70.0f, (float)engine.width / (float)engine.height, 0.1f, 100.0f);
-	materials_setup(&engine.render_context.material_system);
+	if (engine.scene && engine.scene(&engine, engine.scene_context) != ENGINE_HOOK_RESULT_CONTINUE)
+		return -1;
+
 	glfwMakeContextCurrent(engine.window);
 	if (engine.multi_thread_render)
 	{

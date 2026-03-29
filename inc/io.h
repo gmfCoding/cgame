@@ -12,8 +12,10 @@
 
 char *io_fileread(const char *path);
 
-char* io_get_executable_filepath();
-char* io_get_executable_dir();
+char* io_get_executable_filepath(char path[PATH_MAX]);
+char* io_get_executable_dir(char path[PATH_MAX]);
 char* io_merge_path(char* pathA, char* next);
 void io_merge_path_curr(char path[PATH_MAX], const char* next);
 bool io_file_exists(const char* file_path);
+// Appends the path separator to the end of the path if it is not already present
+void io_divide_end(char path[PATH_MAX]);

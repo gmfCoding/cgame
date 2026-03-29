@@ -23,8 +23,10 @@ void transform_get_mat4(t_transform *transform, mat4 value)
 
 t_entity *entity_create(t_entitytype type)
 {
+    static uint32_t latest = 0;
     t_entity *entity = malloc(sizes[type]);
     memcpy(entity, defaults[type], sizes[type]);
+    entity->entity_id = latest++;
 	return entity;
 }
 

@@ -2,18 +2,23 @@
 #include "load_glad.h"
 #include "shader.h"
 #include "renderer.h"
+#include "logging.h"
 
 t_mat_prop *material_prop_get(t_material *mat, const char* name)
 {
+	if (mat == NULL || name == NULL)
+		return NULL;
+	if (map_mat_prop_contains(&mat->properties, name) == false)
+		return NULL;
 	map_mat_prop_value *a = map_mat_prop_get_mut(&mat->properties, name);
 	if (a == NULL)
-		return NULL;
+		return te_logf(LOG_LEVEL_ERROR, "material", "Material '%s' does not contain property '%s'", mat->name, name), NULL;
     t_mat_prop *prop = &a->second;
     return prop;
 }
 
 bool mat_prop_location_try_load(t_material *mat, t_mat_prop *prop)
-{
+{	
 	if (prop == NULL || mat == NULL || mat->shader == NULL)
 		return false;
 	if (prop->location_status == MPLS_UNLOADED)
@@ -115,4 +120,13 @@ void material_prop_add_range(t_material *mat, vec_mat_prop properties)
     {  
         material_prop_add(mat, it.ref);
     }
+}
+
+void material_prop_update_named(t_material *material, const char* name, t_mat_prop_value value)
+{
+	t_mat_prop* prop = material_prop_get(material, name);
+	if (prop == NULL)
+		return te_logf(LOG_LEVEL_WARNING, "material", "Material '%s' does not contain property '%s'", material->name, name);
+	prop->value = value;
+	material_prop_update(material, prop);
 }

@@ -28,6 +28,7 @@ util/time.c \
 util/math.c \
 util/bounds.c \
 util/random.c \
+util/logging.c \
 input/input.c \
 input/input_hooks.c \
 input/keys.c \
@@ -44,7 +45,11 @@ core/proc_mesh_grid.c \
 world/hex_grid.c \
 model.c \
 system/io.c \
-asset.c
+asset.c \
+$(HCSCENES)
+
+
+HCSCENES = hcscenes/cubed_array.c
 
 ifndef $(TEST)
 TEST=main.c

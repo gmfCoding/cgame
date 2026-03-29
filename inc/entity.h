@@ -24,6 +24,7 @@ typedef struct s_mesh_renderer
 
 typedef struct s_entity
 {
+    uint32_t entity_id;
     t_transform transform;
     t_mesh_renderer *renderer;
 

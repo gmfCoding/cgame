@@ -57,6 +57,15 @@ static void render_mesh_render_default_props(t_render_ctx *context, t_material* 
 	}
 
 	{
+		t_mat_prop *prop = material_prop_get(material, "viewPos");
+		if (prop != NULL)
+		{
+			glm_vec3_copy(context->camera.transform.position, prop->value.f3);
+			material_prop_update(material, prop);
+		}
+	}
+
+	{
 		t_mat_prop *prop = material_prop_get(material, "view");
 		if (prop != NULL)
 		{

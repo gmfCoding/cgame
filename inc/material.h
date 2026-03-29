@@ -41,6 +41,7 @@ t_mat_prop *material_prop_get(t_material *mat, const char* name);
 /// @param material 
 /// @param name 
 void material_prop_update(t_material *material, t_mat_prop *prop);
+void material_prop_update_named(t_material *material, const char* name, t_mat_prop_value value);
 
 void material_apply(t_render_ctx* context, t_material *mat);
 

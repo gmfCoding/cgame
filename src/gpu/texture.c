@@ -25,6 +25,25 @@
 // 	resource.manager->add_func(resource.manager, resource.data);
 // }
 
+void gpu_texture_create(t_gpu_texture* gpu_tex, int width, int height, int colour)
+{
+	glGenTextures(1, &gpu_tex->id);
+	glBindTexture(GL_TEXTURE_2D, gpu_tex->id);
+	// set the texture wrapping/filtering options (on the currently bound texture object)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	
+	int* data = malloc(width * height * sizeof(int)); 
+	for (int i = 0; i < width * height; i++)
+	{
+		data[i] = colour; // Red with full alpha
+	}
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	free(data);
+}
+
 void gpu_texture_add(t_gpu_texture* gpu_tex, const char *name, const char *asset_path, int channels)
 {
 	glGenTextures(1, &gpu_tex->id);
