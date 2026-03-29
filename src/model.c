@@ -234,7 +234,7 @@ t_model *model_load(const char *file_path)
 					if (f2->v[ov].n == f1->v[v].n)
 						continue;
 					// Found same vertex with different normal
-					printf("Found shared vertex with different normal! %zu %zu\n", i, oi);
+					//printf("Found shared vertex with different normal! %zu %zu\n", i, oi);
 					vec_vec3_push_back(&temp_vertices, temp_vertices.data[f2->v[ov].i]);
 					f1->v[v].i = temp_vertices._len - 1;
 					// vec_GPUIndex_push_back(&vertex_indices, temp_vertices._len);

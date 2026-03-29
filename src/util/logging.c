@@ -8,6 +8,7 @@
 
 #include "io.h"
 #include "logging.h"
+#include <dirent.h>
 
 const char* log_level_strings[LOG_LEVEL_COUNT] = {
     [LOG_LEVEL_NONE] = "NONE",
@@ -59,6 +60,60 @@ void te_dvlogf_internal(enum te_log_level level, int descriptor, const char* cat
     va_end(list);
 }
 
+void te_log_delete_old_logs(void)
+{
+    // if (g_log_context.path_options.directory == NULL)
+    //     return;
+    // char path[PATH_MAX];
+    // io_get_executable_dir(path);
+    // io_merge_path_curr(path, g_log_context.path_options.directory);
+
+    // DIR* dir = opendir(path);
+    // if (dir == NULL)
+    // {
+    //     fprintf(stderr, "Failed to open log directory '%s' for cleanup\n", path);
+    //     return;
+    // }
+
+    // struct dirent* entry;
+    // time_t now = time(NULL);
+    // int file_count = 0;
+    // #ifndef DT_REG
+    //     #define DT_REG 8
+    //     #error "DT_REG not defined, defining it as 8. This may cause issues if the actual value is different on this platform."
+    // #endif
+    // // Loop over files in the log directory, and if there are more than 8 .txt files, delete the oldest ones
+    // // Loop over files in the log directory, and find the earliest modified .txt file, and delete it if there are more than 3 .txt files
+    // while ((entry = readdir(dir)) != NULL)
+    // {
+    //     if (entry->d_type == DT_REG && strstr(entry->d_name, ".txt") != NULL)
+    //     {
+    //         file_count++;
+    //         if (file_count > 0)
+    //         {
+    //             char file_path[PATH_MAX];
+    //             snprintf(file_path, sizeof(file_path), "%s%s", path, entry->d_name);
+    //             struct stat st;
+    //             if (stat(file_path, &st) == 0)                {
+    //                 double age = difftime(now, st.st_mtime);
+    //                 if (age > 60 * 60 * 24) // If the file is older than 1 day, delete it
+    //                 {   
+    //                     if (remove(file_path) == 0)
+    //                     {
+    //                         fprintf(stderr, "Deleted old log file '%s'\n", file_path);
+    //                     }
+    //                     else
+    //                     {
+    //                         fprintf(stderr, "Failed to delete old log file '%s'\n", file_path);
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+    // closedir(dir);
+}
+
 void te_setup_log_file(void)
 {
     if (g_log_context.path_options.directory == NULL)
@@ -76,6 +131,7 @@ void te_setup_log_file(void)
     {
         fprintf(stderr, "Failed to open log file '%s' for writing\n", file_path);
     }
+    te_log_delete_old_logs();
 }
 
 void te_vlogf(enum te_log_level level, const char* category, const char* fmt, va_list list)
@@ -96,6 +152,7 @@ void te_logf(enum te_log_level level, const char* category, const char* fmt, ...
     te_vlogf(level, category, fmt, args);
     va_end(args);
 }
+
 
 void te_log_set_category(const char* category, bool status)
 {

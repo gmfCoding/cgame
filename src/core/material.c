@@ -68,6 +68,7 @@ void mat_prop_apply(t_material *mat, t_mat_prop *prop)
 			// }
 			glActiveTexture(prop->value.texslot.slot);
 			glBindTexture(GL_TEXTURE_2D, prop->value.texslot.tex);
+			glUniform1i(prop->location, prop->value.texslot.slot - GL_TEXTURE0); // Assuming slot is GL_TEXTURE0, GL_TEXTURE1, etc.
 			break;
 		case MPT_MAT4:
 			glUniformMatrix4fv(prop->location, 1, GL_FALSE, &prop->value.mat[0][0]);

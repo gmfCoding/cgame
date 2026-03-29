@@ -203,16 +203,16 @@ void materials_setup(t_material_system *system)
 		t_material *lit = material_system_mat_create(system, (t_material){.shader = shader, .name = "general_lit_material"});
 		printf("Shader general_lit_shader: %p\n", shader);
 		t_gpu_texture texture;
-		gpu_texture_add(&texture, "crate", asset_get_path(path, 2, "textures", "uv.png"), 4);
+		gpu_texture_add(&texture, "crate", asset_get_path(path, 2, "textures", "crate.png"), 4);
 
-		material_prop_add_new(lit, "diffuse_tex", MPT_SAMPLER2D, (t_mat_prop_value){.texslot = {.tex = texture.id, .slot = GL_TEXTURE0}});	
+		t_gpu_texture texture_specular;
+		gpu_texture_add(&texture_specular, "crate_spec", asset_get_path(path, 2, "textures", "crate_spec.png"), 4);
 
-		material_prop_add_new(lit, "material.ambient", MPT_FLOAT3, MPT_DEFAULT);
-		material_prop_add_new(lit, "material.diffuse", MPT_FLOAT3, MPT_DEFAULT);
-		material_prop_add_new(lit, "material.specular", MPT_FLOAT3, MPT_DEFAULT);
-		material_prop_add_new(lit, "material.shininess", MPT_FLOAT1, (t_mat_prop_value){.f1={32.0f}});
+		material_prop_add_new(lit, "material.diffuse", MPT_SAMPLER2D, (t_mat_prop_value){.texslot = {.tex = texture.id, .slot = GL_TEXTURE0}});
+		material_prop_add_new(lit, "material.specular", MPT_SAMPLER2D, (t_mat_prop_value){.texslot = {.tex = texture_specular.id, .slot = GL_TEXTURE1}});
+		material_prop_add_new(lit, "material.shininess", MPT_FLOAT1, (t_mat_prop_value){.f1={64.0f}});
 
-		material_prop_add_new(lit, "light.ambient", MPT_FLOAT3, (t_mat_prop_value){.f3={0.7, 0.7, 0.7}});
+		material_prop_add_new(lit, "light.ambient", MPT_FLOAT3, (t_mat_prop_value){.f3={0.2, 0.2, 0.2}});
 		material_prop_add_new(lit, "light.diffuse", MPT_FLOAT3, (t_mat_prop_value){.f3={0.5, 0.5, 0.5}});
 		material_prop_add_new(lit, "light.specular", MPT_FLOAT3, (t_mat_prop_value){.f3={1.0, 1.0, 1.0}});
 		material_prop_add_new(lit, "light.position", MPT_FLOAT3, (t_mat_prop_value){.f3={0.0, 0.0, 0.0}});
@@ -292,9 +292,9 @@ static void setup_cubes(t_engine* engine, struct scene_cube_array* scene)
 				ent->transform.position[1] = j * 3.5f;
 				ent->transform.position[2] = k * 3.5f;
 
-				ent->transform.scale[0] = 0.5;
-				ent->transform.scale[1] = 0.5;
-				ent->transform.scale[2] = 0.5;
+				ent->transform.scale[0] = 1;
+				ent->transform.scale[1] = 1;
+				ent->transform.scale[2] = 1;
 				t_material *material;
 				// if (i % 2 == 0)
 				// {
@@ -335,27 +335,20 @@ static e_engine_hook_result ca_render_thread(t_engine* engine, struct scene_cube
 	// scene->light->transform.position[1] = angleY;
 	// scene->light->transform.position[2] = angleZ;
 
-	// light properties
-	vec3 lightColour;
-	lightColour[0] = (sin(glfwGetTime() * 2.0));
-	lightColour[1] = (sin(glfwGetTime() * 0.7));
-	lightColour[2] = (sin(glfwGetTime() * 1.3));
 	
-	vec3 diffuseColor;
-	glm_vec3_mul(lightColour, (vec3){0.5f, 0.5f, 0.5f}, diffuseColor);
 	vec3 ambientColour;
-	glm_vec3_mul(diffuseColor, (vec3){0.2f, 0.2f, 0.2f}, ambientColour);
+	glm_vec3_copy((vec3){0.2f, 0.2f, 0.2f}, ambientColour);
+	vec3 diffuseColor;
+	glm_vec3_copy((vec3){0.5f, 0.5f, 0.5f}, diffuseColor);
 
-	material_prop_update_named(scene->shared, "light.ambient", (t_mat_prop_value){.f3={lightColour[0], lightColour[1], lightColour[2]}});
 	material_prop_update_named(scene->shared, "light.ambient", (t_mat_prop_value){.f3={ambientColour[0], ambientColour[1], ambientColour[2]}});
 	material_prop_update_named(scene->shared, "light.diffuse", (t_mat_prop_value){.f3={diffuseColor[0], diffuseColor[1], diffuseColor[2]}});
 	material_prop_update_named(scene->shared, "light.specular", (t_mat_prop_value){.f3={1.0f, 1.0f, 1.0f}});
 
 	// material properties
-	material_prop_update_named(scene->shared, "material.ambient", (t_mat_prop_value){.f3={1.0f, 0.5f, 0.31f}});
-	material_prop_update_named(scene->shared, "material.diffuse", (t_mat_prop_value){.f3={1.0f, 0.5f, 0.31f}});
-	material_prop_update_named(scene->shared, "material.specular", (t_mat_prop_value){.f3={0.5f, 0.5f, 0.5f}}); // specular lighting doesn't have full effect on this object's material
-	material_prop_update_named(scene->shared, "material.shininess", (t_mat_prop_value){.f1={32.0f}});
+	//material_prop_update_named(scene->shared, "material.diffuse", (t_mat_prop_value){.f3={1.0f, 0.5f, 0.31f}});
+	//material_prop_update_named(scene->shared, "material.specular", (t_mat_prop_value){.f3={0.5f, 0.5f, 0.5f}}); // specular lighting doesn't have full effect on this object's material
+	material_prop_update_named(scene->shared, "material.shininess", (t_mat_prop_value){.f1={64.0f}});
 	material_prop_update_named(scene->shared, "light.position", 
 		(t_mat_prop_value){.f3={scene->light->transform.position[0],
 								scene->light->transform.position[1],
@@ -364,9 +357,10 @@ static e_engine_hook_result ca_render_thread(t_engine* engine, struct scene_cube
 	// printf("ca_render_thread: %f\n", engine->delta_time);
     return ENGINE_HOOK_RESULT_CONTINUE;
 }
-
+#include "logging.h"
 static e_engine_hook_result scene_start(t_engine* engine, struct scene_cube_array* scene)
 {
+	te_logf(LOG_LEVEL_INFO, "scene", "Starting scene cube_array");
     setup_cubes(engine, scene);
     return ENGINE_HOOK_RESULT_CONTINUE;
 }
