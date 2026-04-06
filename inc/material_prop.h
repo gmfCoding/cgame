@@ -65,6 +65,13 @@ typedef enum e_mat_prop_type
     MPT_SAMPLER2D,
 } t_mat_prop_type;
 
+typedef enum e_mat_prop_mode
+{
+    MP_MODE_ALWAYS,
+    MP_MODE_DIRTY,
+    MP_MODE_CLEAN,
+} t_mat_prop_mode;
+
 typedef struct s_mat_prop
 {
     const char* name;
@@ -72,7 +79,7 @@ typedef struct s_mat_prop
 	t_mat_prop_type type;
 	GLint location;
 	t_mat_prop_loc_status location_status;
-    bool dirty;
+    t_mat_prop_mode mode;
 } t_mat_prop;
 
 #endif

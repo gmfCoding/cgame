@@ -114,7 +114,7 @@ char* io_get_executable_filepath(char path[PATH_MAX])
 char* io_get_executable_dir(char path[PATH_MAX])
 {
     char path2[PATH_MAX];
-    char* executablePath = io_get_executable_filepath(path2);
+    io_get_executable_filepath(path2);
     char* executableDir = dirname(path2);
     strncpy(path, executableDir, PATH_MAX);
     io_divide_end(path);

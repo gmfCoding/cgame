@@ -1,6 +1,7 @@
 #include "stb_image.h"
 #include "gpu/gpu_texture.h"
 #include "logging.h"
+#include "util.h"
 // typedef struct t_resource
 // {
 // 	const char *name;
@@ -46,6 +47,7 @@ void gpu_texture_create(t_gpu_texture* gpu_tex, int width, int height, int colou
 
 void gpu_texture_add(t_gpu_texture* gpu_tex, const char *name, const char *asset_path, int channels)
 {
+	UNUSED(name);
 	glGenTextures(1, &gpu_tex->id);
 	te_logf(LOG_LEVEL_INFO, "gpu_texture", "Generated Texture: %u\n", gpu_tex->id);
 	glBindTexture(GL_TEXTURE_2D, gpu_tex->id);

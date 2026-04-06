@@ -69,7 +69,6 @@ void gpu_mesh_vertices_refresh(t_gpu_mesh *gm)
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, gm->m_vbo));
     
 	vec_GPUVertex vertices = {0};
-	printf("%d %d\n", gm->mesh->normals._len, gm->mesh->vertices._len);
 	for (intptr_t i = 0; i < mesh->vertices._len; i++)
 	{
 		GPUVertex vertex;

@@ -4,6 +4,7 @@
 #include "material_system.h"
 #include "renderer.h"
 #include "input.h"
+#include "vector4.h"
 
 typedef struct s_engine t_engine;
 typedef enum e_engine_hook_result {
@@ -26,7 +27,7 @@ typedef e_engine_hook_result (*t_engine_scene_func)(t_engine* engine, void* cont
 typedef e_engine_hook_result (*t_engine_render_thread_func)(t_engine* engine, void* context);
 
 
-#define ENGINE_HAS_CONTROL_FLAG(engine, flag) (((engine->control_flags) & flag) == flag)
+#define ENGINE_HAS_CONTROL_FLAG(engine, flag) (((engine->control_flags) & flag) == (flag))
 
 enum e_engine_control_flags
 {
@@ -52,6 +53,7 @@ struct s_engine
     t_inputctx input;
 
 	t_render_ctx render_context;
+	t_vec4 clear_colour;
 
 	uint32_t target_fps;
 

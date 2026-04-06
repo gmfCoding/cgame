@@ -118,7 +118,7 @@ typedef struct vertex
 
 typedef struct face
 {
-	vertex v[3]
+	vertex v[3];
 } face;
 
 #define i_tag face
@@ -126,6 +126,7 @@ typedef struct face
 #define i_header // Do not implement, only expose
 #define i_implement
 #include "stc/vec.h"
+#include <sys/types.h>
 
 t_model *model_load(const char *file_path)
 {
@@ -137,7 +138,7 @@ t_model *model_load(const char *file_path)
 	vec_vec3 temp_vertices = {0};
 	vec_vec2 temp_uvs = {0};
 	vec_vec3 temp_normals = {0};
-	map_GPUIndex vertex_normal_map = map_GPUIndex_init();
+	// map_GPUIndex vertex_normal_map = map_GPUIndex_init();
 
 	size_t face_count = 0;
 
@@ -147,7 +148,7 @@ t_model *model_load(const char *file_path)
 		printf("Cannot open the file: %s!\n", file_path);
 		return NULL;
 	}
-	bool smooth = false;
+	// bool smooth = false;
 	while (1)
 	{
 		char lineHeader[128];
@@ -165,7 +166,7 @@ t_model *model_load(const char *file_path)
 		}
 		else if (strcmp(lineHeader, "s 1") == 0)
 		{
-			smooth = true;
+			// smooth = true;
 		}
 		else if (strcmp(lineHeader, "vn") == 0)
 		{
@@ -276,7 +277,7 @@ t_model *model_load(const char *file_path)
 	// 	}
 	// }
 	// delete unused vertices (that index isn't in vertex_indices) on each face
-	for (size_t i = 0; i < temp_vertices._len; i++)
+	for (ssize_t i = 0; i < temp_vertices._len; i++)
 	{
 		for (size_t f = 0; f < face_count; f++)
 		{
@@ -305,6 +306,7 @@ t_model *model_load(const char *file_path)
 			i--; // Adjust index after removal
 		}
 	used:
+		continue;
 	}
 	// Old working copy
 	// // delete unused vertices (that index isn't in vertex_indices) on each face

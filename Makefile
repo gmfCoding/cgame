@@ -37,6 +37,7 @@ gpu/shader.c \
 gpu/gpu_mesh.c \
 gpu/texture.c \
 core/material.c \
+core/material_lighting.c \
 core/entity.c \
 core/renderer.c \
 core/material_system.c \

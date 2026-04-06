@@ -26,6 +26,7 @@
 x;\
 ASSERT(GLLogCall(#x, __FILE__, __LINE__));\
 
+#define GLCall_Extra(x) GLCall(x)
 // #endif
 
 static void GLClearLog()
@@ -60,6 +61,7 @@ static const char* GLGetError(int error)
 static bool GLLogCall(const char* function, const char* file, int line)
 {
     GLenum error;
+    //printf("[OpenGL Call] %s %s:%d\n", function, file, line);
 
     while ((error = glGetError()))
     {

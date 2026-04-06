@@ -141,13 +141,14 @@ static void render_thread_preframe(t_engine *engine)
 	int flags = 0;
 	if (ENGINE_HAS_CONTROL_FLAG(engine, ENGINE_CONTROL_RENDER_DO_CLEAR_COLOUR))
 	{
-		GLCall(glClearColor(.2,.2,.6,1));
+		
+		GLCall(glClearColor(engine->clear_colour.v[0], engine->clear_colour.v[1], engine->clear_colour.v[2], engine->clear_colour.v[3]));
 		flags |= GL_COLOR_BUFFER_BIT;
 	}
 	if (ENGINE_HAS_CONTROL_FLAG(engine, ENGINE_CONTROL_RENDER_DO_CLEAR_DEPTH))
 		flags |= GL_DEPTH_BUFFER_BIT;
 	if (ENGINE_HAS_CONTROL_FLAG(engine, ENGINE_CONTROL_RENDER_DO_CLEAR_COLOUR | ENGINE_CONTROL_RENDER_DO_CLEAR_DEPTH))
-		glClear(flags);
+		GLCall(glClear(flags));
 }
 
 static void render_thread_camera(t_engine *engine, float delta_time)
@@ -186,8 +187,8 @@ int render_thread(t_engine *engine)
 	double lasttime = 0;
 	//set_capture_file_path("./captures/frame");
 
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_DEPTH_TEST);
+	GLCall(glEnable(GL_CULL_FACE));
+	GLCall(glEnable(GL_DEPTH_TEST));
 	while (!glfwWindowShouldClose(engine->window))
 	{
 		// static bool capture_started = false;
@@ -210,9 +211,13 @@ int render_thread(t_engine *engine)
 			render_thread_camera(engine, delta_time);
 
 		if (ENGINE_HAS_CONTROL_FLAG(engine, ENGINE_CONTROL_RENDER_BACK_FACE_CULLING))
-			glEnable(GL_CULL_FACE);
+		{
+			GLCall(glEnable(GL_CULL_FACE));
+		}
 		else
-			glDisable(GL_CULL_FACE);
+		{
+			GLCall(glDisable(GL_CULL_FACE));
+		}
 
 
 		if (engine->render_thread_frame_interhook && engine->render_thread_frame_interhook(engine, engine->render_thread_context) != ENGINE_HOOK_RESULT_CONTINUE)
@@ -265,7 +270,7 @@ void scene_select(t_engine* engine, char* name)
 int main(int argc, char** argv)
 {
 	t_engine engine = {0};
-	engine.target_fps = 144;
+	engine.target_fps = 10;
 	engine.input = (t_inputctx){0};
 	glfw_input_context = &engine.input;
 

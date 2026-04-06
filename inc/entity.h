@@ -12,6 +12,7 @@ typedef struct s_render_ctx t_render_ctx;
 typedef enum t_entitytype
 {
     ET_BASE,
+    ET_LIGHT,
 
 } t_entitytype;
 
@@ -31,7 +32,8 @@ typedef struct s_entity
     t_render_ctx *render_ctx;
 } t_entity;
 
-t_entity *entity_create(t_entitytype type);
+t_entity* entity_create_unowned(t_entitytype type, t_entity* entity);
+t_entity* entity_create(t_entitytype type);
 void entity_destroy(t_entity *entity);
 
 #endif
