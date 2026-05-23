@@ -67,6 +67,9 @@ static void materials_setup(t_material_system *system)
 		material_prop_add_new(lit, "material.specular", MPT_SAMPLER2D, (t_mat_prop_value){.texslot = {.tex = texture_specular.id, .slot = 1}});
 		material_prop_add_new(lit, "material.shininess", MPT_FLOAT1, (t_mat_prop_value){.f1={64.0f}});
 		material_prop_add_new(lit, "material.disable_lighting", MPT_BOOL, (t_mat_prop_value){.b={false}});
+		
+		material_prop_add_new(lit, "texcoord_scale", MPT_FLOAT2, (t_mat_prop_value){.f2={1.0f, 2.0f}});
+		material_prop_add_new(lit, "texcoord_offset", MPT_FLOAT2, (t_mat_prop_value){.f2={0.0f, 0.0f}});
 
 		material_prop_add_new(lit, "model", MPT_MAT4, MPT_DEFAULT);
 		material_prop_add_new(lit, "view", MPT_MAT4, MPT_DEFAULT);

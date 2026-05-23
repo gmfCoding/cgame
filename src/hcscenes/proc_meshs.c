@@ -47,28 +47,46 @@ static void materials_setup(t_material_system *system)
 	// }
 	{
 		path[0] = '\0';
-		asset_get_path(path, 2, "shaders", "basic_unlit_vertex.glsl");
-		char *basic_vertex = strdup(path);
+		asset_get_path(path, 2, "shaders", "general_lit_vertex.glsl");
+		char *general_vertex = strdup(path);
 		path[0] = '\0';
-		asset_get_path(path, 2, "shaders", "diffuse_unlit_fragment.glsl");
-		char *basic_fragment = strdup(path);
+		asset_get_path(path, 2, "shaders", "general_lit_fragment.glsl");
+		char *general_fragment = strdup(path);
 
 		GLuint program;
-		gpu_shader_program_compile_vert_frag(basic_vertex, basic_fragment, &program);
-		t_shader *shader = material_system_shader_add(system, (t_shader){.shader_id = program, .name = "diffuse_unlit_shader"});	
-		t_material *lit = material_system_mat_create(system, (t_material){.shader = shader, .name = "diffuse_unlit_material"});
-		
-		t_gpu_texture texture;
-		gpu_texture_add(&texture, "uv_tex", asset_get_path(path, 2, "textures", "uv.png"), 4);
+		gpu_shader_program_compile_vert_frag(general_vertex, general_fragment, &program);
+		t_shader *shader = material_system_shader_add(system, (t_shader){.shader_id = program, .name = "general_lit_shader"});	
+		t_material *lit = material_system_mat_create(system, (t_material){.shader = shader, .name = "general_lit_shader"});
 
-		material_prop_add_new(lit, "diffuse", MPT_SAMPLER2D, (t_mat_prop_value){.texslot = {.tex = texture.id, .slot = 0}});	
+		t_gpu_texture texture;
+		gpu_texture_add(&texture, "crate", asset_get_path(path, 2, "textures", "crate.png"), 4);
+
+		t_gpu_texture texture_specular;
+		gpu_texture_add(&texture_specular, "crate_spec", asset_get_path(path, 2, "textures", "crate_spec.png"), 4);
+
+		material_prop_add_new(lit, "material.diffuse", MPT_SAMPLER2D, (t_mat_prop_value){.texslot = {.tex = texture.id, .slot = 0}});
+		material_prop_add_new(lit, "material.specular", MPT_SAMPLER2D, (t_mat_prop_value){.texslot = {.tex = texture_specular.id, .slot = 1}});
+		material_prop_add_new(lit, "material.shininess", MPT_FLOAT1, (t_mat_prop_value){.f1={64.0f}});
+		material_prop_add_new(lit, "material.disable_lighting", MPT_BOOL, (t_mat_prop_value){.b={false}});
+
+		material_prop_add_new(lit, "texcoord_scale", MPT_FLOAT2, (t_mat_prop_value){.f2={1.0f, 2.0f}});
+		material_prop_add_new(lit, "texcoord_offset", MPT_FLOAT2, (t_mat_prop_value){.f2={0.0f, 0.0f}});
+
+		material_prop_add_new_light(LT_DIRECTION, 0, lit);
+		lit->max_lights = 4;
+		for (int i = 0; i < lit->max_lights; i++)
+		{
+			material_prop_add_new_light(LT_POINT, i, lit);
+		}
 
 		material_prop_add_new(lit, "model", MPT_MAT4, MPT_DEFAULT);
 		material_prop_add_new(lit, "view", MPT_MAT4, MPT_DEFAULT);
 		material_prop_add_new(lit, "proj", MPT_MAT4, MPT_DEFAULT);
 
-		free(basic_fragment);
-		free(basic_vertex);
+		material_prop_add_new(lit, "viewPos", MPT_FLOAT3, MPT_DEFAULT);
+
+		free(general_fragment);
+		free(general_vertex);
 	}
 
 	{
@@ -102,13 +120,13 @@ static void setup_camera(t_engine* engine)
 
 static void setup_meshes(t_engine* engine, struct scene_proc_meshs* scene)
 {
-	pm_grid_create(&scene->pm_grid, 10, 10, true);
+	pm_grid_create(&scene->pm_grid, 10, 20, true);
 
 	t_entity *ent = entity_create(ET_BASE);
 	ent->transform.scale[0] = 1;
 	ent->transform.scale[1] = 1;
 	ent->transform.scale[2] = 1;
-	t_material *material = material_system_mat_get(&engine->render_context.material_system, "diffuse_unlit_material");
+	t_material *material = material_system_mat_get(&engine->render_context.material_system, "general_lit_shader");
 	scene->shared = material; 
 	ent->renderer = mesh_renderer_create(scene->pm_grid.gpu_mesh, material);
 	ent->renderer->render_mesh_normals = true;

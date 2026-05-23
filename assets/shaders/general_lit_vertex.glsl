@@ -8,6 +8,10 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 proj;
 
+
+uniform vec2 texcoord_scale;
+uniform vec2 texcoord_offset;
+
 out VS_OUT {
     vec3 FragPos;
     vec3 Normal;
@@ -19,5 +23,5 @@ void main()
     gl_Position = proj * view * model * vec4(aPos, 1.0);
     vs_out.FragPos = vec3(model * vec4(aPos, 1.0));
     vs_out.Normal = aNormal;
-    vs_out.TexCoord = aTexCoord;
+    vs_out.TexCoord = (aTexCoord * texcoord_scale) + texcoord_offset;
 }
