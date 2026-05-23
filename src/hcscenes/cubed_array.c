@@ -210,10 +210,11 @@ void materials_setup(t_material_system *system)
 		material_prop_add_new(lit, "material.diffuse", MPT_SAMPLER2D, (t_mat_prop_value){.texslot = {.tex = texture.id, .slot = 0}});
 		material_prop_add_new(lit, "material.specular", MPT_SAMPLER2D, (t_mat_prop_value){.texslot = {.tex = texture_specular.id, .slot = 1}});
 		material_prop_add_new(lit, "material.shininess", MPT_FLOAT1, (t_mat_prop_value){.f1={64.0f}});
-		material_prop_add_new(lit, "bliggy", MPT_FLOAT1, (t_mat_prop_value){.f1={64.0f}});
+		material_prop_add_new(lit, "material.disable_lighting", MPT_BOOL, (t_mat_prop_value){.b={false}});
+
 
 		material_prop_add_new_light(LT_DIRECTION, 0, lit);
-		lit->max_lights = 1;
+		lit->max_lights = 4;
 		for (int i = 0; i < lit->max_lights; i++)
 		{
 			material_prop_add_new_light(LT_POINT, i, lit);
@@ -244,7 +245,7 @@ static void setup_cubes(t_engine* engine, struct scene_cube_array* scene)
     path[0] = '\0';
 
     scene->count = 1;
-    scene->cubes = malloc(sizeof(t_entity*) * scene->count);
+    //scene->cubes = malloc(sizeof(t_entity*) * scene->count);
 	
     // scene->cube_model = model_load(asset_get_path(path, 2, "models", ".no/cube_fwn.obj"));
     scene->cube_model = model_load(asset_get_path(path, 2, "models", "cube.obj"));
@@ -347,7 +348,7 @@ static void setup_cubes(t_engine* engine, struct scene_cube_array* scene)
 		entity_render_attach(&engine->render_context, &light->base);
 	}
 
-	material_prop_update_named(scene->shared, "bliggy", (t_mat_prop_value){.f1={64.0f}});
+	//material_prop_update_named(scene->shared, "bliggy", (t_mat_prop_value){.f1={64.0f}});
 
 }
 
@@ -377,7 +378,6 @@ static e_engine_hook_result ca_render_thread(t_engine* engine, struct scene_cube
 	test.light.diffuse = v3new(0.4f, 0.4f, 0.4f);
 	test.light.specular = v3new(1.0f, 1.0f, 1.0f);
 	material_light_update(scene->shared, &test);
-
 
 	//material_prop_update_named(scene->shared, "material.diffuse", (t_mat_prop_value){.f3={1.0f, 0.5f, 0.31f}});
 	//material_prop_update_named(scene->shared, "material.specular", (t_mat_prop_value){.f3={0.5f, 0.5f, 0.5f}}); // specular lighting doesn't have full effect on this object's material

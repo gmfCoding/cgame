@@ -79,7 +79,7 @@ void mat_prop_type_sprintf(char* dest, size_t s, t_mat_prop_type type, t_mat_pro
 		case MPT_FLOAT3: snprintf(dest, s, "(%f, %f, %f)", value.f3[0], value.f3[1], value.f3[2]); break;
 		case MPT_FLOAT4: snprintf(dest, s, "(%f, %f, %f, %f)", value.f4[0], value.f4[1], value.f4[2], value.f4[3]); break;
 		case MPT_SAMPLER2D:
-			snprintf(dest, s, "(.slot = %d, .tex = %d)", value.texslot.tex, value.texslot.slot - GL_TEXTURE0);
+			snprintf(dest, s, "(.slot = %d, .tex = %d)", value.texslot.tex, value.texslot.slot);
 			break;
 		case MPT_MAT4:
 			s -= snprintf(dest + max - s, s, "(%f, %f, %f, %f", value.mat[0][0], value.mat[1][0], value.mat[2][0], value.mat[3][0]);
@@ -129,10 +129,11 @@ void mat_prop_apply(t_material *mat, t_mat_prop *prop)
 			// }
 			te_logf(LOG_LEVEL_INFO, "glUniform", "Uniform '%s' of type '%s' with value: %s", prop->name, e_mat_prop_type_name[prop->type], str); \
 
-			GLCall(glUniform1i(prop->location, prop->value.texslot.slot)); // Assuming slot is GL_TEXTURE0, GL_TEXTURE1, etc.
-
+		
 			GLCall(glActiveTexture(prop->value.texslot.slot + GL_TEXTURE0));
 			GLCall(glBindTexture(GL_TEXTURE_2D, prop->value.texslot.tex));
+
+			GLCall(glUniform1i(prop->location, prop->value.texslot.slot)); // Assuming slot is GL_TEXTURE0, GL_TEXTURE1, etc.
 			break;
 		case MPT_MAT4:
 			te_logf(LOG_LEVEL_INFO, "glUniform", "Uniform '%s' of type '%s' with value: %s", prop->name, e_mat_prop_type_name[prop->type], str); \

@@ -9,6 +9,11 @@
 static void apply_light_prop_vec3(t_material* material, vec3 value, char* prop_name)
 {
     t_mat_prop* prop = material_prop_get(material, prop_name);
+    if (prop == NULL)
+    {
+        te_logf(LOG_LEVEL_WARNING, "lighting", "Warning attempting to update non existent light property on material");
+        return;
+    }
     glm_vec3_copy(value, prop->value.f3);
     material_prop_update(material, prop);
 }
@@ -19,6 +24,11 @@ static void apply_light_point_prop_sized(t_material* material, uint8_t lightInde
     lightUniformElement[0] = '\0';
     snprintf(lightUniformElement, sizeof(lightUniformElement) - 1, "pointLights[%u].%s", lightIndex, prop_name);
     t_mat_prop* prop = material_prop_get(material, lightUniformElement);
+    if (prop == NULL)
+    {
+        te_logf(LOG_LEVEL_WARNING, "lighting", "Warning attempting to update non existent light property on material");
+        return;
+    }
     memcpy(&prop->value, value, size);
     material_prop_update(material, prop);
 }

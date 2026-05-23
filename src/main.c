@@ -257,6 +257,8 @@ void scene_select(t_engine* engine, char* name)
 {
 	if (strncmp(name, "cubes", 10) == 0)
 		engine->prehook = scene_setup_cube_array;
+	if (strncmp(name, "cube_single", 12) == 0)
+		engine->prehook = scene_setup_cube_single;
 	// else if (strncmp(name, "model_viewer", 12) == 0)
 	// 	engine->prehook = scene_setup_model_viewer;	
 	// else if (strncmp(name, "procmesh", 8) == 0)

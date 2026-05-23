@@ -4,9 +4,13 @@ struct Material {
     sampler2D diffuse;
 	sampler2D specular;
     float shininess;
+
+	bool disable_lighting;
 };
 
 struct PointLight {
+
+	bool enabled;
     vec3 position;
   
     vec3 ambient;
@@ -26,6 +30,7 @@ struct DirectionalLight {
     vec3 specular;
 };
 
+// IMPORTANT THAT NR_POINT_LIGHTS is defined in the application and should match the number of point lights used in the scene.
 #define NR_POINT_LIGHTS 4
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform DirectionalLight directional;
@@ -78,11 +83,15 @@ vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 fragPos
 
 void main()
 {
+	if (material.disable_lighting)
+	{
+		FragColour = vec4(vec3(texture(material.diffuse, vs.TexCoord)), 1.0);
+		return;
+	}
 	vec3 norm = normalize(vs.Normal);
 	vec3 viewDir = normalize(viewPos - vs.FragPos);
 	vec3 result = CalculateDirectionalLight(directional, norm, vs.FragPos, viewDir);
 	for(int i = 0; i < NR_POINT_LIGHTS; i++)
         result += CalculatePointLight(pointLights[i], norm, vs.FragPos, viewDir);
 	FragColour = vec4(result, 1.0);  
-	//FragColour = texture(material.specular, vs.TexCoord);
 }
