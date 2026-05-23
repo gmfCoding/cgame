@@ -19,17 +19,26 @@ void render_gpu_line_list(t_gpu_line_list *line_list)
 	GLCall(glDrawArrays(GL_LINES, 0, line_list->count * 2));
 }
 
-void render_gpu_mesh(t_gpu_mesh *mesh)
+void render_gpu_mesh_mode_indices(t_gpu_mesh *mesh)
 {
     GLCall(glBindVertexArray(mesh->m_vao));
     GLCall(glDrawElements(GL_TRIANGLES, mesh->m_size, GL_UNSIGNED_INT, NULL));
 }
+
+void render_gpu_mesh_mode_points_only(t_gpu_mesh *mesh)
+{
+    GLCall(glBindVertexArray(mesh->m_vao));
+	glPointSize(20.0f);
+    GLCall(glDrawArrays(GL_POINTS, 0, mesh->m_size));
+}
+
 
 t_mesh_renderer *mesh_renderer_create(t_gpu_mesh *mesh, t_material *material)
 {
     t_mesh_renderer *renderer = malloc(sizeof(t_mesh_renderer));
     *renderer = (t_mesh_renderer){0};
     renderer->material = material;
+	renderer->render_mode = MRMT_INDICES;
     renderer->mesh = mesh;
     return renderer;
 }
@@ -122,7 +131,10 @@ void render_mesh_renderer(t_render_ctx *context, t_transform *transform, t_mesh_
 	render_mesh_render_default_props(context, renderer->material, transform);
 
 	material_apply(context, renderer->material);
-	render_gpu_mesh(renderer->mesh);
+	if (renderer->render_mode == MRMT_INDICES)
+		render_gpu_mesh_mode_indices(renderer->mesh);
+	else if (renderer->render_mode == MRMT_POINTS_ONLY)
+		render_gpu_mesh_mode_points_only(renderer->mesh);
 	if (renderer->render_mesh_normals)
 	{
 		t_gpu_line_list *line_list = &renderer->mesh->line_list;

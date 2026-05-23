@@ -9,6 +9,8 @@
 typedef struct s_material t_material;
 typedef struct s_render_ctx t_render_ctx;
 
+
+
 typedef enum t_entitytype
 {
     ET_BASE,
@@ -16,10 +18,19 @@ typedef enum t_entitytype
 
 } t_entitytype;
 
+
+typedef enum t_mesh_render_mode
+{
+    MRMT_INDICES,
+    MRMT_POINTS_ONLY,
+} t_mesh_render_mode_type;
+
 typedef struct s_mesh_renderer
 {
     t_gpu_mesh *mesh;
 	t_material *material;
+
+    t_mesh_render_mode_type render_mode;
     bool render_mesh_normals;
 } t_mesh_renderer;
 

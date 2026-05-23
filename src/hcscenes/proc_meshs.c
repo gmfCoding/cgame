@@ -12,6 +12,7 @@ struct scene_proc_meshs
     t_model* cube_model;
 	t_material* shared;
 	t_pm_grid pm_grid;
+	t_pm_rounded_cube pm_rounded_cube;
 };
 
 #include "material_system.h"
@@ -45,6 +46,30 @@ static void materials_setup(t_material_system *system)
 	// 	free(basic_fragment);
 	// 	free(basic_vertex);
 	// }
+
+	{
+		path[0] = '\0';
+		asset_get_path(path, 2, "shaders", "basic_colour_vertex.glsl");
+		char *basic_vertex = strdup(path);
+		
+		path[0] = '\0';
+		asset_get_path(path, 2, "shaders", "basic_colour_fragment.glsl");
+		char *basic_fragment = strdup(path);
+		
+		GLuint program;
+		gpu_shader_program_compile_vert_frag(basic_vertex, basic_fragment, &program);
+		t_shader *shader = material_system_shader_add(system, (t_shader){.shader_id = program, .name = "basic_colour_shader"});	
+		t_material *basic = material_system_mat_create(system, (t_material){.shader = shader, .name = "basic_colour_material"});
+
+		// vec_mat_prop props = {};
+		// vec_mat_prop_push(&props, (t_mat_prop){.name = "MVP", .type=MPT_MAT4});
+		material_prop_add_new(basic, "MVP", MPT_MAT4, MPT_DEFAULT);
+		material_prop_add_new(basic, "colour", MPT_FLOAT3, (t_mat_prop_value){.f3={1,1,0}});
+
+		free(basic_fragment);
+		free(basic_vertex);
+	}
+
 	{
 		path[0] = '\0';
 		asset_get_path(path, 2, "shaders", "general_lit_vertex.glsl");
@@ -121,16 +146,26 @@ static void setup_camera(t_engine* engine)
 static void setup_meshes(t_engine* engine, struct scene_proc_meshs* scene)
 {
 	pm_grid_create(&scene->pm_grid, 10, 20, true);
+	pm_rounded_cube_create(&scene->pm_rounded_cube, 4, 3, 3, 1.0f, true);
+
+
+	t_material *material = material_system_mat_get(&engine->render_context.material_system, "general_lit_shader");
+	scene->shared = material; 
 
 	t_entity *ent = entity_create(ET_BASE);
 	ent->transform.scale[0] = 1;
-	ent->transform.scale[1] = 1;
+	ent->transform.scale[1] = 4;
 	ent->transform.scale[2] = 1;
-	t_material *material = material_system_mat_get(&engine->render_context.material_system, "general_lit_shader");
-	scene->shared = material; 
 	ent->renderer = mesh_renderer_create(scene->pm_grid.gpu_mesh, material);
 	ent->renderer->render_mesh_normals = true;
 	entity_render_attach(&engine->render_context, ent);
+
+	t_material *unlit_colour = material_system_mat_get(&engine->render_context.material_system, "basic_colour_material");
+	t_entity *ent2 = entity_create(ET_BASE);
+	ent2->renderer = mesh_renderer_create(scene->pm_rounded_cube.gpu_mesh, unlit_colour);
+	ent2->renderer->render_mode = MRMT_POINTS_ONLY;
+	ent2->renderer->render_mesh_normals = true;
+	entity_render_attach(&engine->render_context, ent2);
 }
 
 

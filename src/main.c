@@ -297,7 +297,7 @@ int main(int argc, char** argv)
 	if (engine.multi_thread_render)
 	{
 		pthread_t render_thread_id;
-		pthread_create(&render_thread_id, NULL, (void *(*)(void *))render_thread, &engine);
+		pthread_create(&render_thread_id, NULL, (void *)render_thread, &engine);
 		while (!glfwWindowShouldClose(engine.window)) {
 			glfwPollEvents();
 		}

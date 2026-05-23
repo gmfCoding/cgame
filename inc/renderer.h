@@ -26,7 +26,7 @@ t_mesh_renderer* mesh_renderer_create(t_gpu_mesh *mesh, t_material *material);
 
 void render_entities(t_render_ctx *ctx);
 
-void render_gpu_mesh(t_gpu_mesh *mesh);
+void render_gpu_mesh_mode_indices(t_gpu_mesh *mesh);
 
 void render_mesh_renderer(t_render_ctx *context, t_transform *transform, t_mesh_renderer *renderer);
 

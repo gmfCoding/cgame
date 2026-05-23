@@ -39,7 +39,8 @@ void gpu_mesh_line_from_normals(t_gpu_mesh *gm, t_gpu_line_list **line_list)
 	GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(t_vec3), 0));
 }
 
-t_gpu_mesh *gpu_mesh_add(t_mesh *mesh)
+
+t_gpu_mesh *gpu_mesh_add_(t_mesh *mesh, t_fo_gpu_mesh_add opts)
 {
     t_gpu_mesh *gmesh = malloc(sizeof(t_gpu_mesh));
     *gmesh = (t_gpu_mesh){0};
@@ -50,14 +51,21 @@ t_gpu_mesh *gpu_mesh_add(t_mesh *mesh)
 	GLCall(glGenVertexArrays(1, &gmesh->m_vao)); // Vertex  Array  Object
 
 	GLCall(glGenBuffers(1, &gmesh->m_vbo)); // Vertex  Buffer Object (temp)
-	GLCall(glGenBuffers(1, &gmesh->m_ibo)); // Element Buffer Object (temp)
+	if (opts.points_only == false)
+		GLCall(glGenBuffers(1, &gmesh->m_ibo)); // Element Buffer Object (temp)
 
     GLCall(glBindVertexArray(gmesh->m_vao));
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, gmesh->m_vbo));
 
 	gpu_mesh_vertices_refresh(gmesh);
-	gpu_mesh_indices_refresh(gmesh);
-
+	if (opts.points_only == false)
+	{
+		gpu_mesh_indices_refresh(gmesh);
+	}
+	else
+	{
+		gmesh->m_size = mesh->vertices._len;
+	}
     GLCall(glBindVertexArray(0));
 	return gmesh;
 }
