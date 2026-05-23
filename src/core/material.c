@@ -59,6 +59,8 @@ bool mat_prop_location_try_load(t_material *mat, t_mat_prop *prop)
 
 void mat_prop_type_sprintf(char* dest, size_t s, t_mat_prop_type type, t_mat_prop_value value)
 {
+	size_t max = s;
+
 	switch (type)
 	{
 		case MPT_BOOL: snprintf(dest, s, "%u", value.u1); break;
@@ -80,10 +82,10 @@ void mat_prop_type_sprintf(char* dest, size_t s, t_mat_prop_type type, t_mat_pro
 			snprintf(dest, s, "(.slot = %d, .tex = %d)", value.texslot.tex, value.texslot.slot - GL_TEXTURE0);
 			break;
 		case MPT_MAT4:
-			s += snprintf(dest, s, "(%f, %f, %f, %f", value.mat[0][0], value.mat[1][0], value.mat[2][0], value.mat[3][0]);
-			s += snprintf(dest, s, "%f, %f, %f, %f", value.mat[0][1], value.mat[1][1], value.mat[2][1], value.mat[3][1]);
-			s += snprintf(dest, s, "%f, %f, %f, %f", value.mat[0][2], value.mat[1][2], value.mat[2][2], value.mat[3][2]);
-			snprintf(dest, s, "%f, %f, %f, %f)", value.mat[0][3], value.mat[1][3], value.mat[2][3], value.mat[3][3]);
+			s -= snprintf(dest + max - s, s, "(%f, %f, %f, %f", value.mat[0][0], value.mat[1][0], value.mat[2][0], value.mat[3][0]);
+			s -= snprintf(dest + max - s, s, "%f, %f, %f, %f", value.mat[0][1], value.mat[1][1], value.mat[2][1], value.mat[3][1]);
+			s -= snprintf(dest + max - s, s, "%f, %f, %f, %f", value.mat[0][2], value.mat[1][2], value.mat[2][2], value.mat[3][2]);
+			s -= snprintf(dest + max - s, s, "%f, %f, %f, %f)", value.mat[0][3], value.mat[1][3], value.mat[2][3], value.mat[3][3]);
 			break;
 	default:
 		break;
