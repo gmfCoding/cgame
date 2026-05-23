@@ -5,12 +5,13 @@
 #include "entity.h"
 #include "renderer.h"
 #include "entity/light.h"
+#include "core/procmesh.h"
 
-struct scene_cube_single
+struct scene_proc_meshs
 {
     t_model* cube_model;
-    t_gpu_mesh* cube_gpu_mesh;
 	t_material* shared;
+	t_pm_grid pm_grid;
 };
 
 #include "material_system.h"
@@ -46,36 +47,49 @@ static void materials_setup(t_material_system *system)
 	// }
 	{
 		path[0] = '\0';
-		asset_get_path(path, 2, "shaders", "general_lit_vertex.glsl");
-		char *general_vertex = strdup(path);
+		asset_get_path(path, 2, "shaders", "basic_unlit_vertex.glsl");
+		char *basic_vertex = strdup(path);
 		path[0] = '\0';
-		asset_get_path(path, 2, "shaders", "general_lit_fragment.glsl");
-		char *general_fragment = strdup(path);
+		asset_get_path(path, 2, "shaders", "diffuse_unlit_fragment.glsl");
+		char *basic_fragment = strdup(path);
 
 		GLuint program;
-		gpu_shader_program_compile_vert_frag(general_vertex, general_fragment, &program);
-		t_shader *shader = material_system_shader_add(system, (t_shader){.shader_id = program, .name = "general_lit_shader"});	
-		t_material *lit = material_system_mat_create(system, (t_material){.shader = shader, .name = "test_material"});
-
+		gpu_shader_program_compile_vert_frag(basic_vertex, basic_fragment, &program);
+		t_shader *shader = material_system_shader_add(system, (t_shader){.shader_id = program, .name = "diffuse_unlit_shader"});	
+		t_material *lit = material_system_mat_create(system, (t_material){.shader = shader, .name = "diffuse_unlit_material"});
+		
 		t_gpu_texture texture;
-		gpu_texture_add(&texture, "crate", asset_get_path(path, 2, "textures", "crate.png"), 4);
+		gpu_texture_add(&texture, "uv_tex", asset_get_path(path, 2, "textures", "uv.png"), 4);
 
-		t_gpu_texture texture_specular;
-		gpu_texture_add(&texture_specular, "crate_spec", asset_get_path(path, 2, "textures", "crate_spec.png"), 4);
-
-		material_prop_add_new(lit, "material.diffuse", MPT_SAMPLER2D, (t_mat_prop_value){.texslot = {.tex = texture.id, .slot = 0}});
-		material_prop_add_new(lit, "material.specular", MPT_SAMPLER2D, (t_mat_prop_value){.texslot = {.tex = texture_specular.id, .slot = 1}});
-		material_prop_add_new(lit, "material.shininess", MPT_FLOAT1, (t_mat_prop_value){.f1={64.0f}});
-		material_prop_add_new(lit, "material.disable_lighting", MPT_BOOL, (t_mat_prop_value){.b={false}});
+		material_prop_add_new(lit, "diffuse", MPT_SAMPLER2D, (t_mat_prop_value){.texslot = {.tex = texture.id, .slot = 0}});	
 
 		material_prop_add_new(lit, "model", MPT_MAT4, MPT_DEFAULT);
 		material_prop_add_new(lit, "view", MPT_MAT4, MPT_DEFAULT);
 		material_prop_add_new(lit, "proj", MPT_MAT4, MPT_DEFAULT);
 
-		material_prop_add_new(lit, "viewPos", MPT_FLOAT3, MPT_DEFAULT);
+		free(basic_fragment);
+		free(basic_vertex);
+	}
 
-		free(general_fragment);
-		free(general_vertex);
+	{
+		path[0] = '\0';
+		asset_get_path(path, 2, "shaders", "normal_line_vertex.glsl");
+		char *vert = strdup(path);
+
+		path[0] = '\0';
+		asset_get_path(path, 2, "shaders", "normal_line_fragment.glsl");
+		char *frag = strdup(path);
+
+		GLuint program;
+		gpu_shader_program_compile_vert_frag(vert, frag, &program);
+		t_shader *shader = material_system_shader_add(system, (t_shader){.shader_id = program, .name = "normal_line_shader"});
+		t_material *mat = material_system_mat_create(system, (t_material){.shader = shader, .name = "normal_line_material"});
+
+		material_prop_add_new(mat, "MVP", MPT_MAT4, MPT_DEFAULT);
+		material_prop_add_new(mat, "colour", MPT_FLOAT3, (t_mat_prop_value){.f3 = {0, 1, 1}});
+
+		free(vert);
+		free(frag);
 	}
 }
 
@@ -86,29 +100,25 @@ static void setup_camera(t_engine* engine)
 	camera_init(&engine->render_context.camera, 70.0f, (float)engine->width / (float)engine->height, 0.1f, 100.0f);
 }
 
-static void setup_cubes(t_engine* engine, struct scene_cube_single* scene)
+static void setup_meshes(t_engine* engine, struct scene_proc_meshs* scene)
 {
-    char path[PATH_MAX];
-    path[0] = '\0';
-
-	scene->cube_model = model_load(asset_get_path(path, 2, "models", "cube.obj"));
-    scene->cube_gpu_mesh = gpu_mesh_add(&scene->cube_model->mesh);
+	pm_grid_create(&scene->pm_grid, 10, 10, true);
 
 	t_entity *ent = entity_create(ET_BASE);
-
 	ent->transform.scale[0] = 1;
 	ent->transform.scale[1] = 1;
 	ent->transform.scale[2] = 1;
-	t_material *material = material_system_mat_get(&engine->render_context.material_system, "test_material");
+	t_material *material = material_system_mat_get(&engine->render_context.material_system, "diffuse_unlit_material");
 	scene->shared = material; 
-	ent->renderer = mesh_renderer_create(scene->cube_gpu_mesh, material);
+	ent->renderer = mesh_renderer_create(scene->pm_grid.gpu_mesh, material);
+	ent->renderer->render_mesh_normals = true;
 	entity_render_attach(&engine->render_context, ent);
 }
 
 
 static e_engine_hook_result ca_render_thread(t_engine* engine, void* scene_ptr)
 {
-	struct scene_cube_single* const scene = (struct scene_cube_single*)scene_ptr;
+	struct scene_proc_meshs* const scene = (struct scene_proc_meshs*)scene_ptr;
 
     const double delta_time = engine->delta_time;
     static float angle = 0.0;
@@ -122,9 +132,9 @@ static e_engine_hook_result ca_render_thread(t_engine* engine, void* scene_ptr)
 
 static e_engine_hook_result scene_start(t_engine* engine, void* scene_ptr)
 {
-	struct scene_cube_single* const scene = (struct scene_cube_single*)scene_ptr;
-	te_logf(LOG_LEVEL_INFO, "scene", "Starting scene cube_single");
-    setup_cubes(engine, scene);
+	struct scene_proc_meshs* const scene = (struct scene_proc_meshs*)scene_ptr;
+	te_logf(LOG_LEVEL_INFO, "scene", "Starting scene proc_meshs");
+    setup_meshes(engine, scene);
 	engine->clear_colour = (t_vec4){.v = {0.05, 0.05, 0.05, 0.05}};
     return ENGINE_HOOK_RESULT_CONTINUE;
 }
@@ -138,11 +148,11 @@ static e_engine_hook_result scene_awake(t_engine* engine, void* scene_ptr)
     return ENGINE_HOOK_RESULT_CONTINUE;
 }
 
-e_engine_hook_result scene_setup_cube_single(t_engine* engine, void* context)
+e_engine_hook_result scene_setup_proc_meshs(t_engine* engine, void* context)
 {
 	UNUSED(context);
-    struct scene_cube_single* scene = malloc(sizeof(*scene));
-    *scene = (struct scene_cube_single){0};
+    struct scene_proc_meshs* scene = malloc(sizeof(*scene));
+    *scene = (struct scene_proc_meshs){0};
 
     engine->posthook = (void*)&scene_awake;
     engine->hook_context = scene;

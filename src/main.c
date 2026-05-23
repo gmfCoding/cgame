@@ -257,8 +257,12 @@ void scene_select(t_engine* engine, char* name)
 {
 	if (strncmp(name, "cubes", 10) == 0)
 		engine->prehook = scene_setup_cube_array;
-	if (strncmp(name, "cube_single", 12) == 0)
+	else if (strncmp(name, "cube_single", 12) == 0)
 		engine->prehook = scene_setup_cube_single;
+	else if (strncmp(name, "procmesh", 8) == 0)
+		engine->prehook = scene_setup_proc_meshs;
+	else
+		assert(false && "invalid scene name");
 	// else if (strncmp(name, "model_viewer", 12) == 0)
 	// 	engine->prehook = scene_setup_model_viewer;	
 	// else if (strncmp(name, "procmesh", 8) == 0)
@@ -272,7 +276,7 @@ void scene_select(t_engine* engine, char* name)
 int main(int argc, char** argv)
 {
 	t_engine engine = {0};
-	engine.target_fps = 10;
+	engine.target_fps = 144;
 	engine.input = (t_inputctx){0};
 	glfw_input_context = &engine.input;
 

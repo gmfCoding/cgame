@@ -5,6 +5,7 @@
 #include "camera.h"
 #include <cglm/cam.h>
 #include <cglm/mat4.h>
+#include "logging.h"
 
 void render_entities(t_render_ctx *ctx)
 {
@@ -128,6 +129,8 @@ void render_mesh_renderer(t_render_ctx *context, t_transform *transform, t_mesh_
 		if (line_list->count == 0)
 			gpu_mesh_line_from_normals(renderer->mesh, &line_list);
 		t_material *material = material_system_mat_get(&context->material_system, "normal_line_material");
+		if (material == NULL)
+			return;
 		render_mesh_render_default_props(context, material, transform);
 
 		material_apply(context, material);
