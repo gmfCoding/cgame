@@ -5,6 +5,7 @@
 #include "renderer.h"
 #include "input.h"
 #include "vector4.h"
+#include "named_register.h"
 
 typedef struct s_engine t_engine;
 typedef enum e_engine_hook_result {
@@ -73,6 +74,9 @@ struct s_engine
 	t_engine_render_thread_func render_thread_frame_prehook;
 	t_engine_render_thread_func render_thread_frame_interhook;
 	t_engine_render_thread_func render_thread_frame_posthook;
+
+
+	t_named_register named_registers[100];
 	void* render_thread_context;
 };
 

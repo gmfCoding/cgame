@@ -58,6 +58,10 @@ int engine_setup(t_engine *engine)
 	engine->window = glfwCreateWindow(engine->width, engine->height, "My Title", mon, NULL);
 	if (!engine->window)
 	{
+		// print glfw error
+		const char* description;
+		glfwGetError(&description);
+		fprintf(stderr, "Failed to create GLFW window: %s\n", description);
 		glfwTerminate();
 		return -1;
 	}
@@ -261,6 +265,8 @@ void scene_select(t_engine* engine, char* name)
 		engine->prehook = scene_setup_cube_single;
 	else if (strncmp(name, "procmesh", 8) == 0)
 		engine->prehook = scene_setup_proc_meshs;
+	else if (strncmp(name, "gizmo_test", 10) == 0)
+		engine->prehook = scene_setup_gizmo_test;
 	else
 		assert(false && "invalid scene name");
 	// else if (strncmp(name, "model_viewer", 12) == 0)

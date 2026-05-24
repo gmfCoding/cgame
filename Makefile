@@ -36,6 +36,8 @@ input/mouse.c \
 gpu/shader.c \
 gpu/gpu_mesh.c \
 gpu/texture.c \
+core/gizmo.c \
+core/named_register.c \
 core/material.c \
 core/material_lighting.c \
 core/entity.c \
@@ -43,6 +45,7 @@ core/renderer.c \
 core/material_system.c \
 core/camera.c \
 core/proc_mesh_grid.c \
+core/proc_mesh_rounded_cube.c \
 world/hex_grid.c \
 model.c \
 system/io.c \
@@ -50,7 +53,7 @@ asset.c \
 $(HCSCENES)
 
 
-HCSCENES = hcscenes/cubed_array.c
+HCSCENES = hcscenes/cubed_array.c hcscenes/cube_single.c hcscenes/proc_meshs.c hcscenes/gizmo_test.c
 
 ifndef $(TEST)
 TEST=main.c
@@ -94,14 +97,16 @@ LIB-L = $(patsubst %,-L$(DIRLIB)/%, $(dir $(LIBSF)))
 
 CC = clang
 
-WFLAGS = -Wall -Wextra #-Werror -Wno-unused-variable
+WFLAGS = -Wall -Wextra -Werror $(WALLOWED)
+WALLOWED = -Wno-unused-variable -Wno-braced-scalar-init -Wno-unused-but-set-variable
+
 CPPFLAGS =-I$(DIRINC) $(LIB-I) -MMD -MP
 CFLAGS = $(OPFLAG) $(DFLAGS) $(XCFLAGS) $(WFLAGS)
 LDFLAGS = $(OPFLAG) $(DFLAGS) $(XLDFLAGS) $(LIB-L) $(LIB-l) -lz -lm -lpthread -ldl
 OPFLAG = #-O3 -flto -march=native -mtune=native -msse4.2 
 
 OPTS = $(OPT)
-SAN = address 
+SAN = undefined 
 
 CONF = release
 CONF_TARGET = .target

@@ -48,4 +48,6 @@ void gpu_mesh_vertices_refresh(t_gpu_mesh *gm);
 void gpu_mesh_indices_refresh(t_gpu_mesh *gm);
 void gpu_mesh_line_from_normals(t_gpu_mesh *gm, t_gpu_line_list **line_list);
 
+
+void render_gpu_line_list(t_gpu_line_list *line_list);
 #endif

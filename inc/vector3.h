@@ -14,18 +14,15 @@
 
 typedef float t_vecd;
 
-typedef struct s_vec3
+typedef union s_vec3
 {
-	union
+	struct
 	{
-		struct
-		{
-			t_vecd	x;
-			t_vecd	y;
-			t_vecd	z;
-		};
-		t_vecd	v[3];
+		t_vecd	x;
+		t_vecd	y;
+		t_vecd	z;
 	};
+	t_vecd	v[3];
 }				t_vec3;
 
 t_vec3	v3new(t_vecd x, t_vecd y, t_vecd z);
