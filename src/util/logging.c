@@ -179,7 +179,7 @@ void te_logf(enum te_log_level level, const char* category, const char* fmt, ...
 }
 
 
-void te_log_set_category(const char* category, bool status)
+void te_log_set_category(const char* category, enum te_log_filter_state level)
 {
     for (int i = 0; i < 100; i++)
     {
@@ -187,12 +187,12 @@ void te_log_set_category(const char* category, bool status)
         if (g_log_context.categories[i] == NULL)
         {
             g_log_context.categories[i] = category;
-            g_log_context.category_disabled[i] = status == false;
+            g_log_context.category_disabled[i] = level;
             return;
         }
         else if (strncmp(g_log_context.categories[i], category, strlen(category)) == 0)
         {
-            g_log_context.category_disabled[i] = status == false;
+            g_log_context.category_disabled[i] = level;
             return;
         }
     }
@@ -200,13 +200,13 @@ void te_log_set_category(const char* category, bool status)
 
 void logging_default_categories(void)
 {
-    te_log_set_category("io", true);
-    te_log_set_category("material", true);
-    te_log_set_category("rendering", true);
-    te_log_set_category("input", true);
-    te_log_set_category("audio", true);
-    te_log_set_category("physics", true);
-    te_log_set_category("network", true);
-    te_log_set_category("ui", true);
-    te_log_set_category("resource", true);
+    te_log_set_category("io",        LOG_LEVEL_FILTER_ENABLED);
+    te_log_set_category("material",  LOG_LEVEL_FILTER_ENABLED);
+    te_log_set_category("rendering", LOG_LEVEL_FILTER_ENABLED);
+    te_log_set_category("input",     LOG_LEVEL_FILTER_ENABLED);
+    te_log_set_category("audio",     LOG_LEVEL_FILTER_ENABLED);
+    te_log_set_category("physics",   LOG_LEVEL_FILTER_ENABLED);
+    te_log_set_category("network",   LOG_LEVEL_FILTER_ENABLED);
+    te_log_set_category("ui",        LOG_LEVEL_FILTER_ENABLED);
+    te_log_set_category("resource",  LOG_LEVEL_FILTER_ENABLED);
 }
