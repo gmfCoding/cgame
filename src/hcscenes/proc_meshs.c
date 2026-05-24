@@ -155,19 +155,21 @@ void* context[2];
 int generate_rounded_cube(coro_t* coro)
 {
 	struct scene_proc_meshs* scene = (struct scene_proc_meshs*)coro->ctx[0];
-	pm_rounded_cube_create(&scene->pm_rounded_cube, 4, 3, 2, 1.0f, false);
+	pm_rounded_cube_create(&scene->pm_rounded_cube, 4, 3, 2, 1.0f, true);
 	return scene->pm_rounded_cube.mesh.vertices._len;
 }
 
 static void setup_meshes(t_engine* engine, struct scene_proc_meshs* scene)
 {
 	pm_grid_create(&scene->pm_grid, 10, 20, true);
+	pm_rounded_cube_create(&scene->pm_rounded_cube, 4, 3, 2, 1.0f, true);
 
-	thread_t t;
-    coro = coro_new(&t, generate_rounded_cube);
-	coro->ctx[0] = scene;
-	coro->ctx[1] = engine;
-    printf("f yielded %d\n", coro_resume(coro));
+	coro = NULL;
+	//thread_t t;
+    //coro = coro_new(&t, generate_rounded_cube);
+	//coro->ctx[0] = scene;
+	//coro->ctx[1] = engine;
+    //printf("f yielded %d\n", coro_resume(coro));
 
 	t_material *material = material_system_mat_get(&engine->render_context.material_system, "general_lit_shader");
 	scene->shared = material; 
@@ -184,6 +186,7 @@ static void setup_meshes(t_engine* engine, struct scene_proc_meshs* scene)
 	entity_render_attach(&engine->render_context, ent);
 
 	t_material *unlit_colour = material_system_mat_get(&engine->render_context.material_system, "basic_colour_material");
+	material_prop_update_named(unlit_colour, "colour", (t_mat_prop_value){.f3 = {1, 1, 0}});
 	t_entity *ent2 = entity_create(ET_BASE);
 	snprintf(ent2->debug_name, sizeof(ent2->debug_name), "sc_pm rounded_cube");
 	ent2->renderer = mesh_renderer_create(scene->pm_rounded_cube.gpu_mesh, unlit_colour);
@@ -203,21 +206,26 @@ static e_engine_hook_result ca_render_thread(t_engine* engine, void* scene_ptr)
 
 	static int size = 0;
 
-
 	static float timer = 0;
 	static float timer2 = 0;
 	timer += delta_time;
 	timer2 += delta_time;
-
-	if (coro->state == CORO_RUNNING && timer2 > 1.0f && timer > 0.5f)
+	if (coro != NULL)
 	{
-		size = coro_resume(coro);
-		timer = 0;
+		if (coro->state == CORO_RUNNING && timer2 > 1.0f && timer > 0.5f)
+		{
+			size = coro_resume(coro);
+			printf("%d\n", size);
+			timer = 0;
+		}
+		else if (coro->state == CORO_FINISHED)
+		{
+			coro_free(coro);
+			coro = NULL;
+		}
 	}
-	else if (coro->state == CORO_FINISHED)
-		coro_free(coro);
-
-	printf("%d\n", size);
+	else
+		size = scene->pm_rounded_cube.mesh.vertices._len;
 	for (int i = 0; i < size; i++)
 	{
 		gizmo_cube(engine, scene->pm_rounded_cube.mesh.vertices.data[i].v, (vec3){0.1f, 0.1f, 0.1f}, (vec3){1, 0, 0}, false);
