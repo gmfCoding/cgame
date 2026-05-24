@@ -38,6 +38,8 @@
 
 int engine_setup(t_engine *engine)
 {
+
+	te_log_set_category("glCall", LOG_LEVEL_FILTER_FILE_ONLY);
 	engine->control_flags = ENGINE_CONTROL_DEFAULT;
 	if (engine->prehook && engine->prehook(engine, engine->prehook_context) != ENGINE_HOOK_RESULT_CONTINUE)
 		return -1;

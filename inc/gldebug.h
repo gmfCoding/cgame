@@ -13,6 +13,7 @@
 #endif
 #endif
 
+#include "logging.h"
 
 #define ASSERT(x) if(!(x)) BREAKFUNC;
 
@@ -22,11 +23,12 @@
 // #define GLCall(x) x
 // #else
 
-#define GLCall(x) GLClearLog();\
+#define GLCall(x) GLClearLog(); te_logf(LOG_LEVEL_INFO, "glCall", "Calling OpenGL function: %s", #x); \
 x;\
 ASSERT(GLLogCall(#x, __FILE__, __LINE__));\
 
 #define GLCall_Extra(x) GLCall(x)
+
 // #endif
 
 static void GLClearLog()
