@@ -28,7 +28,7 @@ void render_gpu_mesh_mode_indices(t_gpu_mesh *mesh)
 void render_gpu_mesh_mode_points_only(t_gpu_mesh *mesh)
 {
     GLCall(glBindVertexArray(mesh->m_vao));
-	glPointSize(20.0f);
+	GLCall(glPointSize(20.0f));
     GLCall(glDrawArrays(GL_POINTS, 0, mesh->m_size));
 }
 
@@ -144,7 +144,7 @@ void render_mesh_renderer(t_render_ctx *context, t_transform *transform, t_mesh_
 		if (material == NULL)
 			return;
 		render_mesh_render_default_props(context, material, transform);
-
+		te_logf(LOG_LEVEL_INFO, "renderer", "Rendering mesh normals");
 		material_apply(context, material);
 		render_gpu_line_list(&renderer->mesh->line_list);
 	}
@@ -153,8 +153,18 @@ void render_mesh_renderer(t_render_ctx *context, t_transform *transform, t_mesh_
 void render_entity(t_entity *entity)
 {
     if (entity->renderer == NULL || entity->render_ctx == NULL)
-        return;
+		return;
+	char debug_str[64];
+	if (entity->debug_name[0] != '\0')
+		snprintf(debug_str, sizeof(debug_str), "Rendering entity %d ('%s')", entity->entity_id, entity->debug_name);
+	else
+		snprintf(debug_str, sizeof(debug_str), "Rendering entity %d", entity->entity_id);
+	glPushDebugGroupKHR(GL_DEBUG_SOURCE_APPLICATION, 0, -1, debug_str
+	);
+	te_logf(LOG_LEVEL_INFO, "renderer", "%s {", debug_str);
     render_mesh_renderer(entity->render_ctx, &entity->transform, entity->renderer);
+	te_logf(LOG_LEVEL_INFO, "renderer", "} Finished rendering entity %d", entity->entity_id);
+	glPopDebugGroupKHR();
 }
 
 void entity_render_attach(t_render_ctx *render, t_entity *entity)

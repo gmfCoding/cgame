@@ -26,7 +26,7 @@ struct scene_proc_meshs
 #include "stb_image.h"
 
 #include <gizmo.h>
-
+#include "gldebug.h"
 
 static void materials_setup(t_material_system *system)
 {
@@ -173,15 +173,19 @@ static void setup_meshes(t_engine* engine, struct scene_proc_meshs* scene)
 	scene->shared = material; 
 
 	t_entity *ent = entity_create(ET_BASE);
+	snprintf(ent->debug_name, sizeof(ent->debug_name), "sc_pm grid");
 	ent->transform.scale[0] = 1;
 	ent->transform.scale[1] = 4;
 	ent->transform.scale[2] = 1;
 	ent->renderer = mesh_renderer_create(scene->pm_grid.gpu_mesh, material);
+	GLCall(glObjectLabel(GL_BUFFER, ent->renderer->mesh->m_vao, -1, "sc_pm grid vao"));
+
 	ent->renderer->render_mesh_normals = true;
 	entity_render_attach(&engine->render_context, ent);
 
 	t_material *unlit_colour = material_system_mat_get(&engine->render_context.material_system, "basic_colour_material");
 	t_entity *ent2 = entity_create(ET_BASE);
+	snprintf(ent2->debug_name, sizeof(ent2->debug_name), "sc_pm rounded_cube");
 	ent2->renderer = mesh_renderer_create(scene->pm_rounded_cube.gpu_mesh, unlit_colour);
 	ent2->renderer->render_mode = MRMT_POINTS_ONLY;
 	ent2->renderer->render_mesh_normals = true;

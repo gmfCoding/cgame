@@ -209,7 +209,12 @@ void render_gizmos(t_engine* engine)
 {
     t_gizmo_register* gizmos = *named_register_get(engine, "gizmo_register");
    
+	glPushDebugGroupKHR(GL_DEBUG_SOURCE_APPLICATION, 0, -1, "Rendering gizmos: persistent");
     render_gizmos_array(&engine->render_context, &gizmos->gizmo_persist);
+	glPopDebugGroupKHR();
+
+	glPushDebugGroupKHR(GL_DEBUG_SOURCE_APPLICATION, 0, -1, "Rendering gizmos: frame");
     render_gizmos_array(&engine->render_context, &gizmos->gizmo_frame);
     gizmos->gizmo_frame._len = 0;
+	glPopDebugGroupKHR();
 }
