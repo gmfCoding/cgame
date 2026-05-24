@@ -44,6 +44,7 @@ core/entity.c \
 core/renderer.c \
 core/material_system.c \
 core/camera.c \
+core/coroutine.c \
 core/proc_mesh_grid.c \
 core/proc_mesh_rounded_cube.c \
 world/hex_grid.c \

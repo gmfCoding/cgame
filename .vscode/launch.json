@@ -6,6 +6,7 @@
 			"request": "launch",
 			"name": "Launch Program",
 			"program": "${workspaceRoot}/app",
+			"args": ["procmesh"],
 			"symbolLoadInfo": {
 				"loadAll": true,
 				"exceptionList": ""
