@@ -27,6 +27,28 @@ struct te_log_context g_log_context = {
     }
 };
 
+static int te_log_category_index(const char* category)
+{
+    for (int i = 0; i < 100; i++)
+    {
+        if (g_log_context.categories[i] && strncmp(g_log_context.categories[i], category, strlen(category)) == 0)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+static bool te_log_category_enabled(const char* category)
+{
+    int index = te_log_category_index(category);
+    if (index != -1)
+    {        
+        return g_log_context.category_disabled[index] == false;
+    }
+    return false;
+}
+
 void te_dvlogf_internal(enum te_log_level level, int descriptor, const char* category, const char* fmt, va_list args)
 {
     va_list list;
@@ -136,6 +158,8 @@ void te_setup_log_file(void)
 
 void te_vlogf(enum te_log_level level, const char* category, const char* fmt, va_list list)
 {
+    if (te_log_category_enabled(category) == false)
+        return;
     if (g_log_context.unfiltered_fd == -1)
         te_setup_log_file();
 
@@ -147,6 +171,7 @@ void te_vlogf(enum te_log_level level, const char* category, const char* fmt, va
 
 void te_logf(enum te_log_level level, const char* category, const char* fmt, ...)
 {
+
     va_list args;
     va_start(args, fmt);
     te_vlogf(level, category, fmt, args);
@@ -158,15 +183,16 @@ void te_log_set_category(const char* category, bool status)
 {
     for (int i = 0; i < 100; i++)
     {
+        // First null category, add new category
         if (g_log_context.categories[i] == NULL)
         {
             g_log_context.categories[i] = category;
-            g_log_context.category_enabled[i] = status;
+            g_log_context.category_disabled[i] = status == false;
             return;
         }
         else if (strncmp(g_log_context.categories[i], category, strlen(category)) == 0)
         {
-            g_log_context.category_enabled[i] = status;
+            g_log_context.category_disabled[i] = status == false;
             return;
         }
     }

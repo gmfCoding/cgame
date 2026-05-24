@@ -15,7 +15,7 @@ struct te_log_context {
     int display_fd;
 
     const char* categories[100];
-    bool category_enabled[100];
+    bool category_disabled[100];
 
     struct {
         char* directory;
