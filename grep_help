@@ -1,0 +1,2 @@
+regex find opengl functions: `\sgl[^fm]\w*\(`
+regex replace opengl functions with `(gl.*);` -> `GLCall($1);`
