@@ -7,6 +7,8 @@
 #include "entity/light.h"
 #include "core/procmesh.h"
 
+#include "coroutine.h"
+
 struct scene_proc_meshs
 {
     t_model* cube_model;
@@ -22,6 +24,9 @@ struct scene_proc_meshs
 #include "util.h"
 #include "random.h"
 #include "stb_image.h"
+
+#include <gizmo.h>
+
 
 static void materials_setup(t_material_system *system)
 {
@@ -143,11 +148,26 @@ static void setup_camera(t_engine* engine)
 	camera_init(&engine->render_context.camera, 70.0f, (float)engine->width / (float)engine->height, 0.1f, 100.0f);
 }
 
+
+coro_t *coro;
+void* context[2];
+
+int generate_rounded_cube(coro_t* coro)
+{
+	struct scene_proc_meshs* scene = (struct scene_proc_meshs*)coro->ctx[0];
+	pm_rounded_cube_create(&scene->pm_rounded_cube, 4, 3, 2, 1.0f, false);
+	return scene->pm_rounded_cube.mesh.vertices._len;
+}
+
 static void setup_meshes(t_engine* engine, struct scene_proc_meshs* scene)
 {
 	pm_grid_create(&scene->pm_grid, 10, 20, true);
-	pm_rounded_cube_create(&scene->pm_rounded_cube, 4, 3, 3, 1.0f, true);
 
+	thread_t t;
+    coro = coro_new(&t, generate_rounded_cube);
+	coro->ctx[0] = scene;
+	coro->ctx[1] = engine;
+    printf("f yielded %d\n", coro_resume(coro));
 
 	t_material *material = material_system_mat_get(&engine->render_context.material_system, "general_lit_shader");
 	scene->shared = material; 
@@ -177,6 +197,28 @@ static e_engine_hook_result ca_render_thread(t_engine* engine, void* scene_ptr)
     static float angle = 0.0;
     angle += delta_time;
 
+	static int size = 0;
+
+
+	static float timer = 0;
+	static float timer2 = 0;
+	timer += delta_time;
+	timer2 += delta_time;
+
+	if (coro->state == CORO_RUNNING && timer2 > 1.0f && timer > 0.5f)
+	{
+		size = coro_resume(coro);
+		timer = 0;
+	}
+	else if (coro->state == CORO_FINISHED)
+		coro_free(coro);
+
+	printf("%d\n", size);
+	for (int i = 0; i < size; i++)
+	{
+		gizmo_cube(engine, scene->pm_rounded_cube.mesh.vertices.data[i].v, (vec3){0.1f, 0.1f, 0.1f}, (vec3){1, 0, 0}, false);
+	}
+
     return ENGINE_HOOK_RESULT_CONTINUE;
 }
 
@@ -204,6 +246,9 @@ static e_engine_hook_result scene_awake(t_engine* engine, void* scene_ptr)
 e_engine_hook_result scene_setup_proc_meshs(t_engine* engine, void* context)
 {
 	UNUSED(context);
+
+	te_log_set_category("glUniform", LOG_LEVEL_FILTER_FILE_ONLY);
+
     struct scene_proc_meshs* scene = malloc(sizeof(*scene));
     *scene = (struct scene_proc_meshs){0};
 

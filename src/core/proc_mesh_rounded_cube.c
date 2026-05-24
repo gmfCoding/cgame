@@ -4,6 +4,11 @@
 
 void mesh_calculate_normals(t_mesh *mesh);
 
+typedef struct coro_t_		coro_t;
+
+extern coro_t* coro;
+void coro_yield(coro_t *, int);
+
 void pm_rounded_cube_create(t_pm_rounded_cube* proc, int x_size, int y_size, int z_size, float roundness, bool gpu)
 {
     *proc = (t_pm_rounded_cube){.x_size = x_size, .y_size = y_size, .z_size = z_size, .roundness = roundness};
@@ -21,27 +26,33 @@ void pm_rounded_cube_create(t_pm_rounded_cube* proc, int x_size, int y_size, int
     vec_vec3_reserve(&proc->mesh.vertices, cornerVertices + edgeVertices + faceVertices);
     vec_vec2_reserve(&proc->mesh.uvs, (x_size + 1) * (y_size + 1) * (z_size + 1));
 
+    coro_yield(coro, 0);
 
     int v = 0;
     for (int y = 0; y <= y_size; y++) {
         for (int x = 0; x <= x_size; x++) {
             proc->mesh.vertices.data[v++] = v3new(x, y, 0);
+            coro_yield(coro, v);
         }
         for (int z = 1; z <= z_size; z++) {
             proc->mesh.vertices.data[v++] = v3new(x_size, y, z);
+            coro_yield(coro, v);
         }
         for (int x = x_size - 1; x >= 0; x--) {
             proc->mesh.vertices.data[v++] = v3new(x, y, z_size);
+            coro_yield(coro, v);
         }
         for (int z = z_size - 1; z > 0; z--) {
             proc->mesh.vertices.data[v++] = v3new(0, y, z);
+            coro_yield(coro, v);
         }
     }
 
     // Cap the top face
     for (int z = 1; z < z_size; z++) {
         for (int x = 1; x < x_size; x++) {
-            proc->mesh.vertices.data[v++] = v3new(x, y_size, z);    
+            proc->mesh.vertices.data[v++] = v3new(x, y_size, z);
+            coro_yield(coro, v);    
         }
     }
 
@@ -49,6 +60,7 @@ void pm_rounded_cube_create(t_pm_rounded_cube* proc, int x_size, int y_size, int
     for (int z = 1; z < z_size; z++) {
         for (int x = 1; x < x_size; x++) {
             proc->mesh.vertices.data[v++] = v3new(x, 0, z);
+            coro_yield(coro, v);
         }
     }
 

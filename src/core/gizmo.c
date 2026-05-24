@@ -70,56 +70,50 @@ void gizmo_line(t_engine* engine, vec3 start, vec3 end, vec3 colour, bool persis
 
 void gizmo_line_renderer(t_render_ctx* ctx, t_gizmo* gizmo)
 {
-    UNUSED(ctx);
+    float data[6] = {
+        gizmo->position[0], gizmo->position[1], gizmo->position[2],
+        gizmo->line.end[0], gizmo->line.end[1], gizmo->line.end[2]
+    };
+
+    static GLuint vao = 0;
+    static GLuint vbo = 0;
+    if (vao == 0)
     {
-        vec3 start;
-        vec3 end;
-
-        float data[6] = {
-            gizmo->position[0], gizmo->position[1], gizmo->position[2],
-            gizmo->line.end[0], gizmo->line.end[1], gizmo->line.end[2]
-        };
-
-        static GLuint vao = 0;
-        static GLuint vbo = 0;
-        if (vao == 0)
-        {
-            GLCall(glGenVertexArrays(1, &vao));
-            GLCall(glGenBuffers(1, &vbo));
-
-            GLCall(glBindVertexArray(vao));
-            GLCall(glBindBuffer(GL_ARRAY_BUFFER, vbo));
-            GLCall(glEnableVertexAttribArray(0));
-            GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0));
-        }
+        GLCall(glGenVertexArrays(1, &vao));
+        GLCall(glGenBuffers(1, &vbo));
 
         GLCall(glBindVertexArray(vao));
         GLCall(glBindBuffer(GL_ARRAY_BUFFER, vbo));
-        GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6, data, GL_DYNAMIC_DRAW));
-
-        t_gpu_line_list line_list = (t_gpu_line_list){
-            .lines = NULL,
-            .count = 1,
-            .m_vao = vao,
-            .m_vbo = vbo
-        };
-
-        t_material* material = material_system_mat_get(&ctx->material_system, "basic_colour_material");
-
-        material_prop_update_named(material, "colour", (t_mat_prop_value){.f3 = {gizmo->colour[0], gizmo->colour[1], gizmo->colour[2]}});
-        material_apply(ctx, material_system_mat_get(&ctx->material_system, "basic_colour_material"));
-        {
-            t_mat_prop *prop = material_prop_get(material, "MVP");
-            if (prop != NULL)
-            {
-                glm_mat4_identity(prop->value.mat);
-                glm_mat4_mul(ctx->camera.premultPV, prop->value.mat, prop->value.mat);
-                material_prop_update(material, prop);
-            }
-        }
-
-        render_gpu_line_list(&line_list);
+        GLCall(glEnableVertexAttribArray(0));
+        GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0));
     }
+
+    GLCall(glBindVertexArray(vao));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, vbo));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6, data, GL_DYNAMIC_DRAW));
+
+    t_gpu_line_list line_list = (t_gpu_line_list){
+        .lines = NULL,
+        .count = 1,
+        .m_vao = vao,
+        .m_vbo = vbo
+    };
+
+    t_material* material = material_system_mat_get(&ctx->material_system, "basic_colour_material");
+
+    material_prop_update_named(material, "colour", (t_mat_prop_value){.f3 = {gizmo->colour[0], gizmo->colour[1], gizmo->colour[2]}});
+    material_apply(ctx, material_system_mat_get(&ctx->material_system, "basic_colour_material"));
+    {
+        t_mat_prop *prop = material_prop_get(material, "MVP");
+        if (prop != NULL)
+        {
+            glm_mat4_identity(prop->value.mat);
+            glm_mat4_mul(ctx->camera.premultPV, prop->value.mat, prop->value.mat);
+            material_prop_update(material, prop);
+        }
+    }
+
+    render_gpu_line_list(&line_list);
 }
 
 void gizmo_cube(t_engine* engine, vec3 position, vec3 scale, vec3 colour, bool persistent)
@@ -175,6 +169,18 @@ void gizmo_cube_render(t_render_ctx* ctx, t_gizmo* gizmo)
 
     material_prop_update_named(material, "colour", (t_mat_prop_value){.f3 = {gizmo->colour[0], gizmo->colour[1], gizmo->colour[2]}});
     material_apply(ctx, material_system_mat_get(&ctx->material_system, "basic_colour_material"));
+
+    {
+        t_mat_prop *prop = material_prop_get(material, "MVP");
+        if (prop != NULL)
+        {
+            glm_mat4_identity(prop->value.mat);
+            glm_translate(prop->value.mat, gizmo->position);
+            glm_scale(prop->value.mat, gizmo->cube.scale);
+            glm_mat4_mul(ctx->camera.premultPV, prop->value.mat, prop->value.mat);
+            material_prop_update(material, prop);
+        }
+    }
 
     GLCall(glBindVertexArray(cube_mesh->m_vao));
     GLCall(glDrawElements(GL_TRIANGLES, cube_mesh->m_size, GL_UNSIGNED_INT, 0));
