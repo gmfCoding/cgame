@@ -1,4 +1,5 @@
 CC = cc
+CFLAGS = -I./
 SRC = glad.c
 
 all: libstb.a
