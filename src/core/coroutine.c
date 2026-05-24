@@ -56,6 +56,8 @@ coro_new(thread_t *thread, coro_function_t function)
 int
 coro_resume(coro_t *coro)
 {
+    if (coro == NULL)
+        return 0;
     if (coro->state == CORO_NEW)
         coro->state = CORO_RUNNING;
     else if (coro->state == CORO_FINISHED)
@@ -72,6 +74,8 @@ coro_resume(coro_t *coro)
 void
 coro_yield(coro_t *coro, int value)
 {
+    if (coro == NULL || coro->state != CORO_RUNNING)
+        return;
     coro->yield_value = value;
     swapcontext(&coro->thread->coro.callee, &coro->thread->coro.caller);
 }
@@ -79,6 +83,8 @@ coro_yield(coro_t *coro, int value)
 void
 coro_free(coro_t *coro)
 {
+    if (coro == NULL)
+        return;
     free(coro->stack);
     free(coro);
 }
