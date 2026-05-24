@@ -44,8 +44,7 @@ bool mat_prop_location_try_load(t_material *mat, t_mat_prop *prop)
 		return false;
 	if (prop->location_status == MPLS_UNLOADED)
 	{
-		GLCall_Extra(glGetUniformLocation(mat->shader->shader_id, prop->name));
-		prop->location = glGetUniformLocation(mat->shader->shader_id, prop->name);
+		GLCall(prop->location = glGetUniformLocation(mat->shader->shader_id, prop->name));
 		if (prop->location < 0)
 		{
 			te_logf(LOG_LEVEL_WARNING, "material", "Uniform '%s' does not exist in shader '%s' for material '%s'", prop->name, mat->shader->name, mat->name);
@@ -103,6 +102,7 @@ void mat_prop_apply(t_material *mat, t_mat_prop *prop)
 	// static bool first = false;
 	char str[256] = "\0";
 	mat_prop_type_sprintf(str, sizeof(str), prop->type, prop->value);
+	te_logf(LOG_LEVEL_INFO, "glUniform", "Uniform (%s)'%s' = %s", e_mat_prop_type_name[prop->type], prop->name, str); 
 	//te_logf(LOG_LEVEL_INFO, "material", "Applying prop %s [%s]: %s\n", prop->name, e_mat_prop_type_name[prop->type], str);
 	switch (prop->type)
 	{
@@ -127,17 +127,12 @@ void mat_prop_apply(t_material *mat, t_mat_prop *prop)
 			// 	printf("Binding texture %d to slot %d\n", prop->value.texslot.tex, prop->value.texslot.slot);
 			// 	first = true;
 			// }
-			te_logf(LOG_LEVEL_INFO, "glUniform", "Uniform '%s' of type '%s' with value: %s", prop->name, e_mat_prop_type_name[prop->type], str); \
-
-		
 			GLCall(glActiveTexture(prop->value.texslot.slot + GL_TEXTURE0));
 			GLCall(glBindTexture(GL_TEXTURE_2D, prop->value.texslot.tex));
 
 			GLCall(glUniform1i(prop->location, prop->value.texslot.slot)); // Assuming slot is GL_TEXTURE0, GL_TEXTURE1, etc.
 			break;
 		case MPT_MAT4:
-			te_logf(LOG_LEVEL_INFO, "glUniform", "Uniform '%s' of type '%s' with value: %s", prop->name, e_mat_prop_type_name[prop->type], str); \
-
 			GLCall(glUniformMatrix4fv(prop->location, 1, GL_FALSE, &prop->value.mat[0][0]));
 			break;
 	default:

@@ -27,12 +27,10 @@ typedef struct s_material
 } t_material;
 #define STRINGIFY(x) #x
 #define GLCase(casetype, rtype, func) case casetype: \
-            te_logf(LOG_LEVEL_INFO, "glUniform", "'"STRINGIFY(rtype)" %s (%d) = %s;'", prop->name, prop->location, str); \
 			GLCall(func(prop->location, prop->value.rtype)); \
 			break;
 
 #define GLCaseV(casetype, rtype, func) case casetype: \
-            te_logf(LOG_LEVEL_INFO, "glUniform", "'"STRINGIFY(rtype)" %s (%d) = %s;'", prop->name, prop->location, str); \
 			GLCall(func(prop->location, 1, &prop->value.rtype[0])); \
 			break
 
