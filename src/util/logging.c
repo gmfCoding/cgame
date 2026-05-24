@@ -39,14 +39,14 @@ static int te_log_category_index(const char* category)
     return -1;
 }
 
-static bool te_log_category_enabled(const char* category)
+static enum te_log_filter_state te_log_category_enabled(const char* category)
 {
     int index = te_log_category_index(category);
     if (index != -1)
     {        
-        return g_log_context.category_disabled[index] == false;
+        return g_log_context.category_disabled[index];
     }
-    return false;
+    return LOG_LEVEL_FILTER_ENABLED;
 }
 
 void te_dvlogf_internal(enum te_log_level level, int descriptor, const char* category, const char* fmt, va_list args)
@@ -158,15 +158,18 @@ void te_setup_log_file(void)
 
 void te_vlogf(enum te_log_level level, const char* category, const char* fmt, va_list list)
 {
-    if (te_log_category_enabled(category) == false)
+    enum te_log_filter_state category_state = te_log_category_enabled(category);
+    if (category_state == LOG_LEVEL_FILTER_DISABLED)
         return;
     if (g_log_context.unfiltered_fd == -1)
         te_setup_log_file();
 
-    te_dvlogf_internal(level, g_log_context.unfiltered_fd, category, fmt, list);
+    if (category_state == LOG_LEVEL_FILTER_FILE_ONLY || category_state == LOG_LEVEL_FILTER_ENABLED)
+        te_dvlogf_internal(level, g_log_context.unfiltered_fd, category, fmt, list);
     if (level < g_log_context.min)
         return;
-    te_dvlogf_internal(level, g_log_context.display_fd, category, fmt, list);
+    if (category_state == LOG_LEVEL_FILTER_ENABLED)
+        te_dvlogf_internal(level, g_log_context.display_fd, category, fmt, list);
 }
 
 void te_logf(enum te_log_level level, const char* category, const char* fmt, ...)
