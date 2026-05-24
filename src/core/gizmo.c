@@ -165,10 +165,13 @@ void gizmo_cube_render(t_render_ctx* ctx, t_gizmo* gizmo)
     }
 
     
-    t_material* material = material_system_mat_get(&ctx->material_system, "basic_colour_material");
+    static t_material* material = NULL;
+    
+    if (material == NULL)
+        material = material_system_mat_dup(&ctx->material_system, material_system_mat_get(&ctx->material_system, "basic_colour_material"), "gizmo_cube_material");
 
     material_prop_update_named(material, "colour", (t_mat_prop_value){.f3 = {gizmo->colour[0], gizmo->colour[1], gizmo->colour[2]}});
-    material_apply(ctx, material_system_mat_get(&ctx->material_system, "basic_colour_material"));
+    material_apply(ctx, material);
 
     {
         t_mat_prop *prop = material_prop_get(material, "MVP");
