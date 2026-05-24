@@ -33,6 +33,8 @@
 
 #include "core/procmesh.h"
 #include "transform.h"
+#include "named_register.h"
+#include "gizmo.h"
 
 int engine_setup(t_engine *engine)
 {
@@ -83,6 +85,12 @@ int engine_setup(t_engine *engine)
 		return -1;
 	}
 	glfwShowWindow(engine->window);
+
+	t_gizmo_register* gizmo_register = malloc(sizeof(t_gizmo_register));
+	*gizmo_register = (t_gizmo_register){.gizmo_frame = {0}, .gizmo_persist = {0}};
+
+	t_named_register* named_register_gizmos = named_register_create(engine, "gizmo_register");
+	named_register_gizmos->ptr = gizmo_register;
 	if (engine->posthook && engine->posthook(engine, engine->hook_context) != ENGINE_HOOK_RESULT_CONTINUE)
 		return -1;
 	return 0;
@@ -233,6 +241,7 @@ int render_thread(t_engine *engine)
 		//render_mesh_renderer(&engine->render_context, &transform, grid_renderer);
 
 		render_entities(&engine->render_context);
+		render_gizmos(engine);
 		input_process(&engine->input);
 		input_mouse_move_end(&engine->input);
 		glfwSwapBuffers(engine->window);

@@ -18,7 +18,7 @@ t_named_register* named_register_create(t_engine* engine, const char *name)
     assert(false && "No more slots available for a named register");
 }
 
-void* named_register_get(t_engine* engine, const char *name)
+void** named_register_get(t_engine* engine, const char *name)
 {
     for (int i = 0; i < 100; i++)
     {

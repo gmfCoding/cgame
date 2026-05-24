@@ -12,6 +12,6 @@ typedef struct s_named_register
 } t_named_register;
 
 
-void* named_register_get(t_engine* engine, const char *name);
+void** named_register_get(t_engine* engine, const char *name);
 t_named_register* named_register_create(t_engine* engine, const char *name);
 #endif

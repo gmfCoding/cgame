@@ -25,6 +25,34 @@ static void setup_camera(t_engine* engine)
 	camera_init(&engine->render_context.camera, 70.0f, (float)engine->width / (float)engine->height, 0.1f, 100.0f);
 }
 
+
+static void setup_materials(t_material_system *system)
+{
+    char path[PATH_MAX];
+	{
+		path[0] = '\0';
+		asset_get_path(path, 2, "shaders", "basic_colour_vertex.glsl");
+		char *basic_vertex = strdup(path);
+		
+		path[0] = '\0';
+		asset_get_path(path, 2, "shaders", "basic_colour_fragment.glsl");
+		char *basic_fragment = strdup(path);
+		
+		GLuint program;
+		gpu_shader_program_compile_vert_frag(basic_vertex, basic_fragment, &program);
+		t_shader *shader = material_system_shader_add(system, (t_shader){.shader_id = program, .name = "basic_colour_shader"});	
+		t_material *basic = material_system_mat_create(system, (t_material){.shader = shader, .name = "basic_colour_material"});
+
+		// vec_mat_prop props = {};
+		// vec_mat_prop_push(&props, (t_mat_prop){.name = "MVP", .type=MPT_MAT4});
+		material_prop_add_new(basic, "MVP", MPT_MAT4, MPT_DEFAULT);
+		material_prop_add_new(basic, "colour", MPT_FLOAT3, (t_mat_prop_value){.f3={1,1,0}});
+
+		free(basic_fragment);
+		free(basic_vertex);
+	}
+}
+
 static e_engine_hook_result ca_render_thread(t_engine* engine, void* scene_ptr)
 {
 	struct scene_gizmo_test* const scene = (struct scene_gizmo_test*)scene_ptr;
@@ -34,7 +62,7 @@ static e_engine_hook_result ca_render_thread(t_engine* engine, void* scene_ptr)
     angle += delta_time;
 
     vec3 line_end = {cosf(angle) * 5.0f, 0, sinf(angle) * 5.0f};
-    gizmo_line(engine, (vec3){0,0,0}, line_end, (vec3){1,0,0}, true);
+    gizmo_line(engine, (vec3){0,0,0}, line_end, (vec3){1,0,0}, false);
 
     return ENGINE_HOOK_RESULT_CONTINUE;
 }
@@ -55,8 +83,9 @@ static e_engine_hook_result scene_awake(t_engine* engine, void* scene_ptr)
 {
     UNUSED(scene_ptr);
     setup_camera(engine);
-    
-    gizmo_line(engine, (vec3){0,0,0}, (vec3){1,1,1}, (vec3){1,0,0}, true);
+    setup_materials(&engine->render_context.material_system);
+    gizmo_line(engine, (vec3){0,0,0}, (vec3){1,0,0}, (vec3){1,0,0}, true);
+    gizmo_cube(engine, (vec3){0,0,0}, (vec3){1,1,1}, (vec3){1,0,0}, true);
     return ENGINE_HOOK_RESULT_CONTINUE;
 }
 

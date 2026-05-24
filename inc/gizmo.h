@@ -77,4 +77,9 @@ void gizmo_line_renderer(t_render_ctx* ctx, t_gizmo* gizmo);
 /// @param ctx render context
 /// @param gizmo gizmo to render
 void gizmo_cube_render(t_render_ctx* ctx, t_gizmo* gizmo);
+
+/// @brief Renders all gizmos in the engine's gizmo register.
+/// @param engine engine instance
+void render_gizmos(t_engine* engine);
+
 #endif
